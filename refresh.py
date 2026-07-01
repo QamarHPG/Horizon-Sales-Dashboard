@@ -1,8 +1,4 @@
-"""
-Horizon Path Group — Instantly dashboard refresher
-Pulls live data from Instantly V2 API and rewrites the JS data block in index.html.
-Runs as a GitHub Action; requires INSTANTLY_API_KEY environment variable.
-"""
+# Python Script: Instantly Dashboard Refresher
 
 import json
 import os
@@ -26,7 +22,6 @@ CAMPAIGNS = {
     "hh1to5":  {"id": "07bee31e-9703-4058-9a61-507e2f4840a7", "name": "Home Health Care (1M - 5M)"},
 }
 
-
 def get(path, params=None):
     url = f"{BASE}{path}"
     r = requests.get(url, headers=HEADERS, params=params, timeout=30)
@@ -34,7 +29,6 @@ def get(path, params=None):
         print(f"  HTTP {r.status_code} for {r.url}: {r.text[:300]}", file=sys.stderr)
     r.raise_for_status()
     return r.json()
-
 
 def post(path, body=None):
     url = f"{BASE}{path}"
@@ -44,19 +38,15 @@ def post(path, body=None):
     r.raise_for_status()
     return r.json()
 
-
 def fetch_overview(campaign_id):
     return get("/campaigns/analytics/overview", {"id": campaign_id})
 
-
 def extract_list(data):
-    """Handle APIs that return a list directly or wrap it in {result:[]} or {data:[]}."""
     if isinstance(data, list):
         return data
     if isinstance(data, dict):
         return data.get("result") or data.get("data") or data.get("items") or []
     return []
-
 
 def fetch_daily(campaign_id, days=30):
     end = datetime.now(timezone.utc).date()
@@ -68,20 +58,18 @@ def fetch_daily(campaign_id, days=30):
     })
     return extract_list(data)
 
-
 def fetch_steps(campaign_id):
     data = get("/campaigns/analytics/steps", {"campaign_id": campaign_id})
     return extract_list(data)
-
 
 def fetch_repeat_openers(campaign_key, campaign_id, campaign_name):
     results = []
     cursor = None
     while True:
-        params = {"campaign": campaign_id, "limit": 100}
+        body = {"campaign": campaign_id, "limit": 100}
         if cursor:
-            params["starting_after"] = cursor
-        data = get("/leads", params)
+            body["starting_after"] = cursor
+        data = post("/leads/list", body)  # V2 API uses POST /leads/list, not GET /leads
         items = data.get("items", [])
         for lead in items:
             oc = lead.get("email_open_count") or 0
@@ -101,7 +89,6 @@ def fetch_repeat_openers(campaign_key, campaign_id, campaign_name):
             break
     return results
 
-
 def build_lifetime(overview, campaign_name):
     return {
         "name": campaign_name,
@@ -112,7 +99,6 @@ def build_lifetime(overview, campaign_name):
         "replies": overview.get("reply_count", 0),
         "bounces": overview.get("bounced_count", 0),
     }
-
 
 def build_daily_rows(rows):
     out = []
@@ -125,7 +111,6 @@ def build_daily_rows(rows):
             "replies": r.get("replies", 0),
         })
     return out
-
 
 def build_step_sends(steps, max_steps):
     by_step = {}
@@ -142,7 +127,6 @@ def build_step_sends(steps, max_steps):
             sends.append(by_step.get(i, 0))
     return sends
 
-
 def js_val(v):
     if v is None:
         return "null"
@@ -151,7 +135,6 @@ def js_val(v):
     if isinstance(v, (int, float)):
         return str(v)
     return json.dumps(v)
-
 
 def build_js_object(d):
     parts = []
@@ -165,10 +148,8 @@ def build_js_object(d):
             parts.append(f"{k}: {js_val(v)}")
     return "{ " + ", ".join(parts) + " }"
 
-
 def pct(n, d):
     return f"{(n / d * 100):.1f}" if d else "0.0"
-
 
 def main():
     today = datetime.now(timezone.utc).strftime("%B %-d, %Y")
@@ -204,14 +185,12 @@ def main():
 
     repeat_openers.sort(key=lambda x: x["opens"], reverse=True)
 
-    # Benchmark rates (lifetime blended)
     total_sent = sum(v["sent"] for v in lifetime_totals.values())
     total_opens = sum(v["opens"] for v in lifetime_totals.values())
     total_bounces = sum(v["bounces"] for v in lifetime_totals.values())
     open_rate_pct = pct(total_opens, total_sent)
     bounce_rate_pct = pct(total_bounces, total_sent)
 
-    # Build JS snippets
     lt_js = "{\n" + ",\n".join(
         f'    {k}: {{ name: {json.dumps(v["name"])}, sent: {v["sent"]}, contacted: {v["contacted"]}, '
         f'opens: {v["opens"]}, clicks: {v["clicks"]}, replies: {v["replies"]}, bounces: {v["bounces"]} }}'
@@ -241,7 +220,6 @@ def main():
 
     ss_js = "{\n    " + ",\n    ".join(step_js(k, v) for k, v in step_sends.items()) + "\n  }"
 
-    # Read and patch index.html
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
@@ -266,28 +244,24 @@ def main():
     html = replace_array_block(html, "repeatOpeners", ro_js)
     html = replace_block(html, "stepSends", ss_js)
 
-    # Update pull date in header
     html = re.sub(
         r'Pulled \w+ \d+, \d{4}',
         f'Pulled {today}',
         html
     )
 
-    # Update TODAY constant
     html = re.sub(
         r'const TODAY = new Date\("[^"]+"\);',
         f'const TODAY = new Date("{today_iso}T23:59:59Z");',
         html
     )
 
-    # Update benchmark open rate
     html = re.sub(
         r'(<td>Open rate</td>\s*<td class="num">)([\d.]+%)',
         rf'\g<1>{open_rate_pct}%',
         html
     )
 
-    # Update version in footer
     html = re.sub(r'v\d+ —', f'v{today_iso} —', html)
 
     with open("index.html", "w", encoding="utf-8") as f:
