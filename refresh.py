@@ -17,7 +17,7 @@ if not API_KEY:
     sys.exit(1)
 
 BASE = "https://api.instantly.ai/api/v2"
-HEADERS = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
+HEADERS = {"Authorization": API_KEY, "Content-Type": "application/json"}
 
 CAMPAIGNS = {
     "dental1": {"id": "a4a98af6-b3af-4332-9e14-d59c0a30e860", "name": "Dental Campaign"},
@@ -28,7 +28,10 @@ CAMPAIGNS = {
 
 
 def get(path, params=None):
-    r = requests.get(f"{BASE}{path}", headers=HEADERS, params=params, timeout=30)
+    url = f"{BASE}{path}"
+    r = requests.get(url, headers=HEADERS, params=params, timeout=30)
+    if not r.ok:
+        print(f"  HTTP {r.status_code} for {r.url}: {r.text[:300]}", file=sys.stderr)
     r.raise_for_status()
     return r.json()
 
