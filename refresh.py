@@ -36,14 +36,23 @@ def get(path, params=None):
     return r.json()
 
 
+def post(path, body=None):
+    url = f"{BASE}{path}"
+    r = requests.post(url, headers=HEADERS, json=body or {}, timeout=30)
+    if not r.ok:
+        print(f"  HTTP {r.status_code} for {url}: {r.text[:300]}", file=sys.stderr)
+    r.raise_for_status()
+    return r.json()
+
+
 def fetch_overview(campaign_id):
-    return get("/analytics/campaign/overview", {"id": campaign_id})
+    return post("/analytics/campaign/overview", {"id": campaign_id})
 
 
 def fetch_daily(campaign_id, days=30):
     end = datetime.now(timezone.utc).date()
     start = end - timedelta(days=days)
-    data = get("/analytics/campaign/daily", {
+    data = post("/analytics/campaign/daily", {
         "campaign_id": campaign_id,
         "start_date": str(start),
         "end_date": str(end),
@@ -52,7 +61,7 @@ def fetch_daily(campaign_id, days=30):
 
 
 def fetch_steps(campaign_id):
-    data = get("/analytics/campaign/steps", {"campaign_id": campaign_id})
+    data = post("/analytics/campaign/steps", {"campaign_id": campaign_id})
     return data.get("result", [])
 
 
