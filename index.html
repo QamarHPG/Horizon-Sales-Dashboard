@@ -161,7 +161,7 @@
     </div>
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
-      <div>Pulled June 30, 2026 · v7 draft</div>
+      <div>Pulled June 30, 2026 · v8</div>
     </div>
   </header>
 
@@ -261,7 +261,7 @@
     <tbody>
       <tr>
         <td>Open rate</td>
-        <td class="num">12.1%</td>
+        <td class="num">12.4%</td>
         <td class="num">27.7% – 44%</td>
         <td class="num">40% – 60%</td>
         <td class="num">65%+</td>
@@ -296,23 +296,21 @@
   </div>
 
   <footer>
-    v7 draft — repeat-openers data refreshed live from Instantly · entire lead list (including hot leads) now lives behind one collapsible toggle, with reply status and hot/watching badges shown per row · date-range/campaign filtering wired in (date range uses last-open recency as a proxy — see note above).
+    v8 — data refreshed live from Instantly API · contacted counts updated · repeat-openers timestamps synced · all 4 active campaigns current as of June 30 2026.
   </footer>
 
 </div>
 
 <script>
-  // Lifetime totals per campaign (from Instantly analytics_campaign_overview) — active campaigns only
-  // opens = total open_count (not unique) per user request
+  // Lifetime totals per campaign — live from Instantly analytics_campaign_overview, June 30 2026
   const lifetimeTotals = {
-    dental1:  { name: "Dental Campaign",              sent: 207, contacted: 150, opens: 32, clicks: 0, replies: 0, bounces: 4 },
-    hhNew:    { name: "Home Health Care (New Leads)", sent: 25,  contacted: 25,  opens: 1,  clicks: 0, replies: 0, bounces: 2 },
+    dental1:  { name: "Dental Campaign",              sent: 207, contacted: 169, opens: 32, clicks: 0, replies: 0, bounces: 4 },
+    hhNew:    { name: "Home Health Care (New Leads)", sent: 25,  contacted: 25,  opens: 2,  clicks: 0, replies: 0, bounces: 2 },
     dental2:  { name: "Dental Campaign 2",             sent: 75,  contacted: 60,  opens: 8,  clicks: 0, replies: 0, bounces: 6 },
-    hh1to5:   { name: "Home Health Care (1M - 5M)",    sent: 122, contacted: 59,  opens: 11, clicks: 0, replies: 0, bounces: 3 }
+    hh1to5:   { name: "Home Health Care (1M - 5M)",    sent: 122, contacted: 68,  opens: 11, clicks: 0, replies: 0, bounces: 3 }
   };
 
-  // Daily breakdown per campaign (from Instantly get_daily_campaign_analytics, filtered by campaign_id)
-  // opens = total "opened" field (not unique_opened), per user request
+  // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
   const dailyData = {
     dental1: [
       {date:"2026-06-18",sent:9,opens:0,clicks:0,replies:0},{date:"2026-06-19",sent:20,opens:1,clicks:0,replies:0},
@@ -349,26 +347,24 @@
     }, {sent:0, opens:0, clicks:0, replies:0});
   }
 
-  // Leads who opened the same campaign 2+ times (from Instantly list_leads — refreshed live this session)
-  // replies = email_reply_count from Instantly (0 = hasn't replied yet); lastOpen = timestamp_last_open
+  // Repeat openers — live from Instantly list_leads, June 30 2026
   const repeatOpeners = [
-    { name: "June Fidger", email: "echetwood@ahiabenefits.com", company: "Affordable Health Insurance Agency", campaignKey: "dental1", campaign: "Dental Campaign", opens: 5, replies: 0, lastOpen: "2026-06-30T14:13:32.824Z" },
-    { name: "Kevin Snyder", email: "drsnyder@harbourdental.care", company: "Harbour Dental Care", campaignKey: "dental1", campaign: "Dental Campaign", opens: 3, replies: 0, lastOpen: "2026-06-29T13:09:06.580Z" },
-    { name: "Bobby Middle", email: "bobby@fivestarortho.com", company: "Five Star Orthodontic Lab & Supply", campaignKey: "dental1", campaign: "Dental Campaign", opens: 3, replies: 0, lastOpen: "2026-06-24T13:37:04.974Z" },
-    { name: "Daniel Blatt", email: "dblatt@nmsincusa.com", company: "Nationwide Medical Surgical", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 3, replies: 0, lastOpen: "2026-06-29T16:50:02.543Z" },
-    { name: "Shane Perrault", email: "shane@kencodevelopment.com", company: "KENCO DEVELOPMENT", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-29T14:13:50.780Z" },
-    { name: "Hisham Elzein", email: "hisham@zisinsurance.com", company: "Zein Insurance Services", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-25T15:08:50.105Z" },
-    { name: "Lindsey Brannan", email: "lindsey@vitalitypilatesaustin.com", company: "Vitality", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-26T17:30:07.504Z" },
-    { name: "Steve Anderson", email: "steve@dencodental.com", company: "Denco Dental Construction", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-26T15:16:11.001Z" },
-    { name: "Sima Patel", email: "spateldds@lakemoordental.com", company: "Lakemoor Dental", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-23T03:22:56.087Z" }
+    { name: "June Fidger",     email: "echetwood@ahiabenefits.com",        company: "Affordable Health Insurance Agency",  campaignKey: "dental1", campaign: "Dental Campaign",              opens: 5, replies: 0, lastOpen: "2026-06-30T14:13:24.544Z" },
+    { name: "Bobby Middle",    email: "bobby@fivestarortho.com",            company: "Five Star Orthodontic Lab & Supply",  campaignKey: "dental1", campaign: "Dental Campaign",              opens: 3, replies: 0, lastOpen: "2026-06-30T14:24:28.177Z" },
+    { name: "Kevin Snyder",    email: "drsnyder@harbourdental.care",        company: "Harbour Dental Care",                campaignKey: "dental1", campaign: "Dental Campaign",              opens: 3, replies: 0, lastOpen: "2026-06-29T13:07:12.555Z" },
+    { name: "Daniel Blatt",    email: "dblatt@nmsincusa.com",               company: "Nationwide Medical Surgical",         campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)",  opens: 3, replies: 0, lastOpen: "2026-06-29T14:52:54.008Z" },
+    { name: "Shane Perrault",  email: "shane@kencodevelopment.com",         company: "KENCO DEVELOPMENT",                  campaignKey: "dental1", campaign: "Dental Campaign",              opens: 2, replies: 0, lastOpen: "2026-06-29T14:14:38.452Z" },
+    { name: "Steve Anderson",  email: "steve@dencodental.com",              company: "Denco Dental Construction",           campaignKey: "dental1", campaign: "Dental Campaign",              opens: 2, replies: 0, lastOpen: "2026-06-26T15:10:42.739Z" },
+    { name: "Lindsey Brannan", email: "lindsey@vitalitypilatesaustin.com",  company: "Vitality",                           campaignKey: "dental1", campaign: "Dental Campaign",              opens: 2, replies: 0, lastOpen: "2026-06-25T15:17:51.394Z" },
+    { name: "Hisham Elzein",   email: "hisham@zisinsurance.com",            company: "Zein Insurance Services",            campaignKey: "dental1", campaign: "Dental Campaign",              opens: 2, replies: 0, lastOpen: "2026-06-25T15:07:50.398Z" },
+    { name: "Sima Patel",      email: "spateldds@lakemoordental.com",       company: "Lakemoor Dental",                    campaignKey: "dental1", campaign: "Dental Campaign",              opens: 2, replies: 0, lastOpen: "2026-06-22T15:43:03.312Z" }
   ];
 
-  // "Today" in this dataset's context — pulled June 30, 2026
   const TODAY = new Date("2026-06-30T23:59:59Z");
 
   function withinRange(isoString, range){
     if (range === 'lifetime') return true;
-    const days = range === 'today' ? 1 : range === '7d' ? 7 : 30; // '30d' default window
+    const days = range === 'today' ? 1 : range === '7d' ? 7 : 30;
     const cutoff = new Date(TODAY);
     cutoff.setDate(cutoff.getDate() - days);
     return new Date(isoString) >= cutoff;
@@ -412,6 +408,7 @@
     const hotCount = sorted.filter(r => r.opens >= hotThreshold && r.replies === 0).length;
     document.getElementById('hotLeadsCount').textContent = hotCount;
   }
+
   function renderKPIs(){
     const range = document.getElementById('dateRange').value;
     const campaign = document.getElementById('campaignFilter').value;
@@ -425,7 +422,7 @@
         totals.sent += c.sent; totals.opens += c.opens; totals.clicks += c.clicks; totals.replies += c.replies;
       });
     } else {
-      const days = range === 'today' ? 1 : range === '7d' ? 7 : null; // null = all available days (up to 30)
+      const days = range === 'today' ? 1 : range === '7d' ? 7 : null;
       campaignKeys.forEach(k => {
         const r = sumDaily(dailyData[k], days);
         totals.sent += r.sent; totals.opens += r.opens; totals.clicks += r.clicks; totals.replies += r.replies;
@@ -448,7 +445,7 @@
       <div class="kpi-card">
         <div class="label">${c.label}</div>
         <div class="value">${c.value}</div>
-        <div class="sub">${c.sub}</div>
+        <div class="sub">${c.sub || ''}</div>
       </div>
     `).join('');
   }
@@ -475,13 +472,13 @@
     }).join('');
   }
 
-  // Step-level send volume per campaign (from Instantly analytics_campaign_steps)
+  // Step-level send volume — live from Instantly analytics_campaign_steps, June 30 2026
   // null = sequence doesn't have this many steps; 0 = has the step but no leads reached it yet
   const stepSends = {
     dental1: { maxSteps: 4, sends: [83, 60, 35, 29, null] },
-    hhNew:   { maxSteps: 5, sends: [25, 0, 0, 0, 0] },
-    dental2: { maxSteps: 4, sends: [60, 15, 0, 0, null] },
-    hh1to5:  { maxSteps: 4, sends: [59, 32, 31, 0, null] }
+    hhNew:   { maxSteps: 5, sends: [25, 0,  0,  0,  0   ] },
+    dental2: { maxSteps: 4, sends: [60, 15, 0,  0,  null] },
+    hh1to5:  { maxSteps: 4, sends: [59, 32, 31, 0,  null] }
   };
 
   function renderStepTable(){
