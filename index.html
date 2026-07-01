@@ -70,7 +70,7 @@
   }
   .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
-  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
   .kpi-card{
     background:var(--card);
     border:1px solid var(--border);
@@ -446,16 +446,11 @@
       });
     }
 
-    const filteredRepeatOpeners = getFilteredRepeatOpeners();
-    const totalContacted = campaignKeys.reduce((sum, k) => sum + lifetimeTotals[k].contacted, 0);
-    const repeatRate = totalContacted > 0 ? pct(filteredRepeatOpeners.length, totalContacted) : "0.0";
-
     const cards = [
       { label: "Emails sent", value: totals.sent.toLocaleString() },
       { label: "Opens", value: totals.opens.toLocaleString(), sub: totals.sent > 0 ? pct(totals.opens, totals.sent) + "% open rate" : "0.0% open rate" },
       { label: "Clicks", value: totals.clicks.toLocaleString(), sub: totals.sent > 0 ? pct(totals.clicks, totals.sent) + "% click rate" : "0.0% click rate" },
-      { label: "Replies", value: totals.replies.toLocaleString(), sub: totals.sent > 0 ? pct(totals.replies, totals.sent) + "% reply rate" : "0.0% reply rate" },
-      { label: "Repeat openers", value: filteredRepeatOpeners.length.toLocaleString(), sub: repeatRate + "% of contacted leads" }
+      { label: "Replies", value: totals.replies.toLocaleString(), sub: totals.sent > 0 ? pct(totals.replies, totals.sent) + "% reply rate" : "0.0% reply rate" }
     ];
 
     document.getElementById('kpiGrid').innerHTML = cards.map(c => `
