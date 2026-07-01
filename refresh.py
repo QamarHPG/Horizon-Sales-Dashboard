@@ -49,6 +49,15 @@ def fetch_overview(campaign_id):
     return get("/campaigns/analytics/overview", {"id": campaign_id})
 
 
+def extract_list(data):
+    """Handle APIs that return a list directly or wrap it in {result:[]} or {data:[]}."""
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        return data.get("result") or data.get("data") or data.get("items") or []
+    return []
+
+
 def fetch_daily(campaign_id, days=30):
     end = datetime.now(timezone.utc).date()
     start = end - timedelta(days=days)
@@ -57,12 +66,12 @@ def fetch_daily(campaign_id, days=30):
         "start_date": str(start),
         "end_date": str(end),
     })
-    return data.get("result", [])
+    return extract_list(data)
 
 
 def fetch_steps(campaign_id):
     data = get("/campaigns/analytics/steps", {"campaign_id": campaign_id})
-    return data.get("result", [])
+    return extract_list(data)
 
 
 def fetch_repeat_openers(campaign_key, campaign_id, campaign_name):
