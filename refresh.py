@@ -46,13 +46,13 @@ def post(path, body=None):
 
 
 def fetch_overview(campaign_id):
-    return post("/analytics/campaign/overview", {"id": campaign_id})
+    return get("/campaigns/analytics/overview", {"id": campaign_id})
 
 
 def fetch_daily(campaign_id, days=30):
     end = datetime.now(timezone.utc).date()
     start = end - timedelta(days=days)
-    data = post("/analytics/campaign/daily", {
+    data = get("/campaigns/analytics/daily", {
         "campaign_id": campaign_id,
         "start_date": str(start),
         "end_date": str(end),
@@ -61,7 +61,7 @@ def fetch_daily(campaign_id, days=30):
 
 
 def fetch_steps(campaign_id):
-    data = post("/analytics/campaign/steps", {"campaign_id": campaign_id})
+    data = get("/campaigns/analytics/steps", {"campaign_id": campaign_id})
     return data.get("result", [])
 
 
