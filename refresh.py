@@ -262,6 +262,13 @@ def main():
         html
     )
 
+    bounce_badge_class = "bad" if float(bounce_rate_pct) >= 5 else "good"
+    html = re.sub(
+        r'(<td>Bounce rate</td>\s*<td class="num">)<span class="badge (?:good|bad)">[\d.]+%</span>',
+        rf'\g<1><span class="badge {bounce_badge_class}">{bounce_rate_pct}%</span>',
+        html
+    )
+
     html = re.sub(r'v\d+ —', f'v{today_iso} —', html)
 
     with open("index.html", "w", encoding="utf-8") as f:
