@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instantly campaign dashboard</title>
+<style>
+  :root{
+    --navy:#0D1B2A;
+    --gold:#C8A84B;
+    --bg:#F6F5F2;
+    --card:#FFFFFF;
+    --border:#E4E1D8;
+    --text:#1A1F26;
+    --text-muted:#6B7280;
+    --green:#2E7D5B;
+    --red:#B34A3A;
+    --amber:#B98A1F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  .wrap{max-width:1140px;margin:0 auto;padding:32px 24px 64px;}
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:3px solid var(--gold);
+    padding-bottom:18px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  header h1{font-size:24px;font-weight:700;color:var(--navy);margin:0 0 4px 0;}
+  header .sub{font-size:13px;color:var(--text-muted);}
+  header .meta{text-align:right;font-size:12px;color:var(--text-muted);}
+  header .meta .live{color:var(--green);font-weight:600;}
+
+  .controls{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+  .control-group{display:flex;flex-direction:column;gap:4px;}
+  .control-group label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-muted);}
+  select{
+    font-size:14px;
+    padding:8px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--card);
+    color:var(--text);
+    min-width:200px;
+    font-family:inherit;
+  }
+  select:focus{outline:2px solid var(--gold);outline-offset:1px;}
+
+  .section-label{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--navy);
+    margin:32px 0 12px 0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+  .kpi-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+    border-top:3px solid var(--navy);
+  }
+  .kpi-card .label{font-size:12px;color:var(--text-muted);margin-bottom:6px;}
+  .kpi-card .value{font-size:26px;font-weight:700;color:var(--navy);line-height:1;}
+  .kpi-card .sub{font-size:12px;margin-top:6px;font-weight:600;color:var(--text-muted);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  th{
+    text-align:left;
+    background:var(--navy);
+    color:#fff;
+    font-weight:600;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    padding:10px 12px;
+  }
+  th.num,td.num{text-align:right;}
+  td{padding:10px 12px;border-bottom:1px solid var(--border);}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#FAF9F6;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;}
+  .badge.bad{background:#F6E3E0;color:var(--red);}
+  .badge.good{background:#E2F0E8;color:var(--green);}
+
+  .table-note{font-size:12px;color:var(--text-muted);margin-bottom:10px;}
+
+  details.expand{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    margin-bottom:18px;
+    overflow:hidden;
+  }
+  details.expand summary{
+    cursor:pointer;
+    list-style:none;
+    padding:12px 16px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--navy);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    user-select:none;
+  }
+  details.expand summary::-webkit-details-marker{display:none;}
+  details.expand summary .arrow{transition:transform 0.15s ease;font-size:11px;color:var(--text-muted);}
+  details.expand[open] summary .arrow{transform:rotate(90deg);}
+  details.expand summary:hover{background:#FAF9F6;}
+  details.expand .expand-body{padding:0 16px 16px;}
+  details.expand table{border:none;border-radius:0;}
+
+  .suggest-list{display:flex;flex-direction:column;gap:12px;}
+  .suggest-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-left:4px solid var(--gold);
+    border-radius:0 10px 10px 0;
+    padding:14px 18px;
+  }
+  .suggest-card .head{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+  .suggest-card .head .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;}
+  .suggest-card .head .tag.priority{color:var(--red);}
+  .suggest-card .head .tag.opportunity{color:var(--amber);}
+  .suggest-card .head .tag.fyi{color:var(--text-muted);}
+  .suggest-card .head .campaign{font-size:12px;color:var(--text-muted);}
+  .suggest-card p{margin:0;font-size:13px;line-height:1.5;color:var(--text);}
+
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);text-align:center;}
+
+  @media (max-width:760px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    select{min-width:150px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>Horizon Path Group — Instantly campaign dashboard</h1>
+      <div class="sub">Active campaigns only · Times in Eastern (ET)</div>
+    </div>
+    <div class="meta">
+      <div><span class="live">●</span> Live snapshot</div>
+      <div>Pulled June 30, 2026 · v7 draft</div>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="control-group">
+      <label for="dateRange">Date range</label>
+      <select id="dateRange" onchange="renderKPIs(); renderRepeatOpeners();">
+        <option value="today">Today</option>
+        <option value="7d">Last 7 days</option>
+        <option value="30d" selected>Last 30 days</option>
+        <option value="lifetime">Lifetime (since campaign launch)</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label for="campaignFilter">Campaign</label>
+      <select id="campaignFilter" onchange="renderKPIs(); renderRepeatOpeners();">
+        <option value="all" selected>All active campaigns</option>
+        <option value="dental1">Dental Campaign</option>
+        <option value="hhNew">Home Health Care (New Leads)</option>
+        <option value="dental2">Dental Campaign 2</option>
+        <option value="hh1to5">Home Health Care (1M - 5M)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section-label">KPIs for selected range and campaign</div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="section-label">Per-campaign comparison (lifetime totals)</div>
+  <div class="table-note">Bounces aren't broken out by day in Instantly's API, so bounce rate only appears here at the lifetime level.</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Campaign</th>
+        <th class="num">Sent</th>
+        <th class="num">Contacted</th>
+        <th class="num">Opens</th>
+        <th class="num">Open rate</th>
+        <th class="num">Clicks</th>
+        <th class="num">Replies</th>
+        <th class="num">Bounces</th>
+        <th class="num">Bounce rate</th>
+      </tr>
+    </thead>
+    <tbody id="campaignTableBody"></tbody>
+  </table>
+
+  <div class="section-label">Re-engagement signal (multi-open leads)</div>
+  <div class="table-note">Now follows the date range and campaign dropdowns above. High repeat-open with no reply often means real interest without a strong enough reason to respond yet — worth a direct, personal follow-up outside the sequence. The hot leads (3+ opens, no reply) are flagged inside the list with a badge.<br><br><strong>Note on date range:</strong> Instantly's lead data only stores each lead's <em>total</em> open count and the timestamp of their <em>most recent</em> open — not a log of every open event. So "Last 7 days" here means "last opened within the past 7 days," using their lifetime open count — it's a recency filter, not a true count of opens that happened within that window. Lifetime and campaign filtering are both exact.</div>
+
+  <details class="expand">
+    <summary>View repeat-openers list (<span id="repeatOpenersCount">0</span> leads, <span id="hotLeadsCount">0</span> hot)<span class="arrow">▶</span></summary>
+    <div class="expand-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Company</th>
+            <th>Campaign</th>
+            <th class="num">Opens</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="repeatOpenersBody"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <div class="section-label">Step-level send volume (all active campaigns)</div>
+  <div class="table-note">How many emails have gone out at each step of the sequence — a rough read on how many times each lead has been touched. "—" means that campaign's sequence doesn't have that many steps.</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th class="num">Dental Campaign</th>
+        <th class="num">Home Health (New Leads)</th>
+        <th class="num">Dental Campaign 2</th>
+        <th class="num">Home Health (1M-5M)</th>
+      </tr>
+    </thead>
+    <tbody id="stepTableBody"></tbody>
+  </table>
+
+  <div class="section-label">How your numbers compare to 2026 industry benchmarks</div>
+  <div class="table-note">Your lifetime blended rate across all 4 active campaigns vs. published 2026 cold email benchmarks. Sources below the table.</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th class="num">Your rate</th>
+        <th class="num">2026 average</th>
+        <th class="num">Good</th>
+        <th class="num">Excellent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Open rate</td>
+        <td class="num">12.1%</td>
+        <td class="num">27.7% – 44%</td>
+        <td class="num">40% – 60%</td>
+        <td class="num">65%+</td>
+      </tr>
+      <tr>
+        <td>Reply rate</td>
+        <td class="num">0.0%</td>
+        <td class="num">3.1% – 3.4%</td>
+        <td class="num">5% – 10%</td>
+        <td class="num">10%+</td>
+      </tr>
+      <tr>
+        <td>Click rate</td>
+        <td class="num">0.0%</td>
+        <td class="num">1% – 3%</td>
+        <td class="num">3% – 5%</td>
+        <td class="num">5%+</td>
+      </tr>
+      <tr>
+        <td>Bounce rate</td>
+        <td class="num"><span class="badge bad">3.5%</span></td>
+        <td class="num">3% – 5%</td>
+        <td class="num">under 2%</td>
+        <td class="num">under 1%</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="table-note" style="margin-top:10px;">
+    Open rate is widely flagged across these sources as inflated and unreliable in 2026 — Apple Mail Privacy Protection auto-opens a large share of tracked emails, so treat it as directional, not precise. Reply rate is considered the more trustworthy signal. Click rate has no strong standard for reply-driven cold outreach (most sequences, including yours, don't include a link) — the range above is closer to a marketing-email norm than a sales-outreach one.
+    <br><br>
+    <strong>Sources:</strong> Instantly 2026 Cold Email Benchmark Report (instantly.ai) · Amplemarket 2026 Cold Email Benchmarks (amplemarket.com) · Cleverly Cold Email Benchmarks by Industry (cleverly.co) · Snov.io Cold Email Statistics 2026 (snov.io) · Cleanlist 2026 Cold Email Response Rates (cleanlist.ai)
+  </div>
+
+  <footer>
+    v7 draft — repeat-openers data refreshed live from Instantly · entire lead list (including hot leads) now lives behind one collapsible toggle, with reply status and hot/watching badges shown per row · date-range/campaign filtering wired in (date range uses last-open recency as a proxy — see note above).
+  </footer>
+
+</div>
+
+<script>
+  // Lifetime totals per campaign (from Instantly analytics_campaign_overview) — active campaigns only
+  // opens = total open_count (not unique) per user request
+  const lifetimeTotals = {
+    dental1:  { name: "Dental Campaign",              sent: 207, contacted: 150, opens: 32, clicks: 0, replies: 0, bounces: 4 },
+    hhNew:    { name: "Home Health Care (New Leads)", sent: 25,  contacted: 25,  opens: 1,  clicks: 0, replies: 0, bounces: 2 },
+    dental2:  { name: "Dental Campaign 2",             sent: 75,  contacted: 60,  opens: 8,  clicks: 0, replies: 0, bounces: 6 },
+    hh1to5:   { name: "Home Health Care (1M - 5M)",    sent: 122, contacted: 59,  opens: 11, clicks: 0, replies: 0, bounces: 3 }
+  };
+
+  // Daily breakdown per campaign (from Instantly get_daily_campaign_analytics, filtered by campaign_id)
+  // opens = total "opened" field (not unique_opened), per user request
+  const dailyData = {
+    dental1: [
+      {date:"2026-06-18",sent:9,opens:0,clicks:0,replies:0},{date:"2026-06-19",sent:20,opens:1,clicks:0,replies:0},
+      {date:"2026-06-20",sent:20,opens:2,clicks:0,replies:0},{date:"2026-06-21",sent:20,opens:5,clicks:0,replies:0},
+      {date:"2026-06-22",sent:20,opens:4,clicks:0,replies:0},{date:"2026-06-23",sent:20,opens:7,clicks:0,replies:0},
+      {date:"2026-06-24",sent:14,opens:5,clicks:0,replies:0},{date:"2026-06-25",sent:14,opens:2,clicks:0,replies:0},
+      {date:"2026-06-26",sent:13,opens:2,clicks:0,replies:0},{date:"2026-06-27",sent:14,opens:0,clicks:0,replies:0},
+      {date:"2026-06-28",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-29",sent:14,opens:2,clicks:0,replies:0},
+      {date:"2026-06-30",sent:14,opens:1,clicks:0,replies:0}
+    ],
+    hhNew: [
+      {date:"2026-06-30",sent:25,opens:1,clicks:0,replies:0}
+    ],
+    dental2: [
+      {date:"2026-06-26",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:15,opens:0,clicks:0,replies:0},
+      {date:"2026-06-28",sent:15,opens:3,clicks:0,replies:0},{date:"2026-06-29",sent:15,opens:4,clicks:0,replies:0},
+      {date:"2026-06-30",sent:15,opens:0,clicks:0,replies:0}
+    ],
+    hh1to5: [
+      {date:"2026-06-23",sent:10,opens:1,clicks:0,replies:0},{date:"2026-06-24",sent:16,opens:2,clicks:0,replies:0},
+      {date:"2026-06-25",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:17,opens:1,clicks:0,replies:0},
+      {date:"2026-06-27",sent:16,opens:1,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:0,clicks:0,replies:0},
+      {date:"2026-06-29",sent:16,opens:3,clicks:0,replies:0},{date:"2026-06-30",sent:16,opens:1,clicks:0,replies:0}
+    ]
+  };
+
+  function pct(n, d){ return d > 0 ? ((n/d)*100).toFixed(1) : "0.0"; }
+
+  function sumDaily(arr, days){
+    const slice = days ? arr.slice(-days) : arr;
+    return slice.reduce((acc, d) => {
+      acc.sent += d.sent; acc.opens += d.opens; acc.clicks += d.clicks; acc.replies += d.replies;
+      return acc;
+    }, {sent:0, opens:0, clicks:0, replies:0});
+  }
+
+  // Leads who opened the same campaign 2+ times (from Instantly list_leads — refreshed live this session)
+  // replies = email_reply_count from Instantly (0 = hasn't replied yet); lastOpen = timestamp_last_open
+  const repeatOpeners = [
+    { name: "June Fidger", email: "echetwood@ahiabenefits.com", company: "Affordable Health Insurance Agency", campaignKey: "dental1", campaign: "Dental Campaign", opens: 5, replies: 0, lastOpen: "2026-06-30T14:13:32.824Z" },
+    { name: "Kevin Snyder", email: "drsnyder@harbourdental.care", company: "Harbour Dental Care", campaignKey: "dental1", campaign: "Dental Campaign", opens: 3, replies: 0, lastOpen: "2026-06-29T13:09:06.580Z" },
+    { name: "Bobby Middle", email: "bobby@fivestarortho.com", company: "Five Star Orthodontic Lab & Supply", campaignKey: "dental1", campaign: "Dental Campaign", opens: 3, replies: 0, lastOpen: "2026-06-24T13:37:04.974Z" },
+    { name: "Daniel Blatt", email: "dblatt@nmsincusa.com", company: "Nationwide Medical Surgical", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 3, replies: 0, lastOpen: "2026-06-29T16:50:02.543Z" },
+    { name: "Shane Perrault", email: "shane@kencodevelopment.com", company: "KENCO DEVELOPMENT", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-29T14:13:50.780Z" },
+    { name: "Hisham Elzein", email: "hisham@zisinsurance.com", company: "Zein Insurance Services", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-25T15:08:50.105Z" },
+    { name: "Lindsey Brannan", email: "lindsey@vitalitypilatesaustin.com", company: "Vitality", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-26T17:30:07.504Z" },
+    { name: "Steve Anderson", email: "steve@dencodental.com", company: "Denco Dental Construction", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-26T15:16:11.001Z" },
+    { name: "Sima Patel", email: "spateldds@lakemoordental.com", company: "Lakemoor Dental", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-23T03:22:56.087Z" }
+  ];
+
+  // "Today" in this dataset's context — pulled June 30, 2026
+  const TODAY = new Date("2026-06-30T23:59:59Z");
+
+  function withinRange(isoString, range){
+    if (range === 'lifetime') return true;
+    const days = range === 'today' ? 1 : range === '7d' ? 7 : 30; // '30d' default window
+    const cutoff = new Date(TODAY);
+    cutoff.setDate(cutoff.getDate() - days);
+    return new Date(isoString) >= cutoff;
+  }
+
+  function getFilteredRepeatOpeners(){
+    const range = document.getElementById('dateRange').value;
+    const campaign = document.getElementById('campaignFilter').value;
+    return repeatOpeners.filter(r =>
+      (campaign === 'all' || r.campaignKey === campaign) &&
+      withinRange(r.lastOpen, range)
+    );
+  }
+
+  function renderRepeatOpeners(){
+    const filtered = getFilteredRepeatOpeners();
+    const sorted = [...filtered].sort((a,b) => b.opens - a.opens);
+    const hotThreshold = 3;
+
+    const tbody = document.getElementById('repeatOpenersBody');
+    tbody.innerHTML = sorted.length
+      ? sorted.map(r => {
+          const isHot = r.opens >= hotThreshold && r.replies === 0;
+          const status = r.replies > 0
+            ? `<span class="badge good">Replied</span>`
+            : isHot
+              ? `<span class="badge bad">Hot — no reply</span>`
+              : `<span class="badge good">Watching</span>`;
+          return `<tr>
+            <td>${r.name}</td>
+            <td>${r.email}</td>
+            <td>${r.company}</td>
+            <td>${r.campaign}</td>
+            <td class="num"><span class="badge good">${r.opens}</span></td>
+            <td>${status}</td>
+          </tr>`;
+        }).join('')
+      : `<tr><td colspan="6" class="table-note" style="margin:0;">No repeat openers match this date range and campaign.</td></tr>`;
+
+    document.getElementById('repeatOpenersCount').textContent = filtered.length;
+    const hotCount = sorted.filter(r => r.opens >= hotThreshold && r.replies === 0).length;
+    document.getElementById('hotLeadsCount').textContent = hotCount;
+  }
+  function renderKPIs(){
+    const range = document.getElementById('dateRange').value;
+    const campaign = document.getElementById('campaignFilter').value;
+    const campaignKeys = campaign === 'all' ? Object.keys(lifetimeTotals) : [campaign];
+
+    let totals = {sent:0, opens:0, clicks:0, replies:0};
+
+    if (range === 'lifetime') {
+      campaignKeys.forEach(k => {
+        const c = lifetimeTotals[k];
+        totals.sent += c.sent; totals.opens += c.opens; totals.clicks += c.clicks; totals.replies += c.replies;
+      });
+    } else {
+      const days = range === 'today' ? 1 : range === '7d' ? 7 : null; // null = all available days (up to 30)
+      campaignKeys.forEach(k => {
+        const r = sumDaily(dailyData[k], days);
+        totals.sent += r.sent; totals.opens += r.opens; totals.clicks += r.clicks; totals.replies += r.replies;
+      });
+    }
+
+    const filteredRepeatOpeners = getFilteredRepeatOpeners();
+    const totalContacted = campaignKeys.reduce((sum, k) => sum + lifetimeTotals[k].contacted, 0);
+    const repeatRate = totalContacted > 0 ? pct(filteredRepeatOpeners.length, totalContacted) : "0.0";
+
+    const cards = [
+      { label: "Emails sent", value: totals.sent.toLocaleString() },
+      { label: "Opens", value: totals.opens.toLocaleString(), sub: totals.sent > 0 ? pct(totals.opens, totals.sent) + "% open rate" : "0.0% open rate" },
+      { label: "Clicks", value: totals.clicks.toLocaleString(), sub: totals.sent > 0 ? pct(totals.clicks, totals.sent) + "% click rate" : "0.0% click rate" },
+      { label: "Replies", value: totals.replies.toLocaleString(), sub: totals.sent > 0 ? pct(totals.replies, totals.sent) + "% reply rate" : "0.0% reply rate" },
+      { label: "Repeat openers", value: filteredRepeatOpeners.length.toLocaleString(), sub: repeatRate + "% of contacted leads" }
+    ];
+
+    document.getElementById('kpiGrid').innerHTML = cards.map(c => `
+      <div class="kpi-card">
+        <div class="label">${c.label}</div>
+        <div class="value">${c.value}</div>
+        <div class="sub">${c.sub}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderCampaignTable(){
+    const tbody = document.getElementById('campaignTableBody');
+    tbody.innerHTML = Object.values(lifetimeTotals).map(c => {
+      const openRate = pct(c.opens, c.sent);
+      const bounceRate = pct(c.bounces, c.sent);
+      const bounceBadge = parseFloat(bounceRate) >= 5
+        ? `<span class="badge bad">${bounceRate}%</span>`
+        : `<span class="badge good">${bounceRate}%</span>`;
+      return `<tr>
+        <td>${c.name}</td>
+        <td class="num">${c.sent}</td>
+        <td class="num">${c.contacted}</td>
+        <td class="num">${c.opens}</td>
+        <td class="num">${openRate}%</td>
+        <td class="num">${c.clicks}</td>
+        <td class="num">${c.replies}</td>
+        <td class="num">${c.bounces}</td>
+        <td class="num">${bounceBadge}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Step-level send volume per campaign (from Instantly analytics_campaign_steps)
+  // null = sequence doesn't have this many steps; 0 = has the step but no leads reached it yet
+  const stepSends = {
+    dental1: { maxSteps: 4, sends: [83, 60, 35, 29, null] },
+    hhNew:   { maxSteps: 5, sends: [25, 0, 0, 0, 0] },
+    dental2: { maxSteps: 4, sends: [60, 15, 0, 0, null] },
+    hh1to5:  { maxSteps: 4, sends: [59, 32, 31, 0, null] }
+  };
+
+  function renderStepTable(){
+    const tbody = document.getElementById('stepTableBody');
+    let rows = '';
+    for (let i = 0; i < 5; i++){
+      rows += `<tr><td>Email ${i+1}</td>`;
+      ['dental1','hhNew','dental2','hh1to5'].forEach(k => {
+        const v = stepSends[k].sends[i];
+        rows += `<td class="num">${v === null ? '—' : v}</td>`;
+      });
+      rows += '</tr>';
+    }
+    tbody.innerHTML = rows;
+  }
+
+  renderKPIs();
+  renderCampaignTable();
+  renderRepeatOpeners();
+  renderStepTable();
+</script>
+</body>
+</html>
