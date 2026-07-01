@@ -1,0 +1,34 @@
+name: Refresh Dashboard
+
+on:
+  schedule:
+    - cron: '0 12 * * 1-5'  # 8 AM ET (UTC-4) weekdays
+  workflow_dispatch:          # manual trigger via GitHub UI
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install requests
+
+      - name: Refresh dashboard data
+        run: python refresh.py
+        env:
+          INSTANTLY_API_KEY: ${{ secrets.INSTANTLY_API_KEY }}
+
+      - name: Commit and push if changed
+        run: |
+          git config user.email "dashboard-bot@horizonpathgroup.com"
+          git config user.name "Dashboard Bot"
+          git add index.html
+          git diff --cached --quiet || git commit -m "chore: refresh dashboard $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
