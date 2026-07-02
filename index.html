@@ -350,10 +350,11 @@
 
   function pct(n, d){ return d > 0 ? ((n/d)*100).toFixed(1) : "0.0"; }
 
-  function sumDaily(arr, days){
-    const slice = days ? arr.slice(-days) : arr;
-    return slice.reduce((acc, d) => {
-      acc.sent += d.sent; acc.opens += d.opens; acc.clicks += d.clicks; acc.replies += d.replies;
+  function sumDailyRange(arr, startStr, endStr){
+    return arr.reduce((acc, d) => {
+      if (d.date >= startStr && d.date <= endStr) {
+        acc.sent += d.sent; acc.opens += d.opens; acc.clicks += d.clicks; acc.replies += d.replies;
+      }
       return acc;
     }, {sent:0, opens:0, clicks:0, replies:0});
   }
@@ -446,20 +447,23 @@
         const c = lifetimeTotals[k];
         totals.sent += c.sent; totals.opens += c.opens; totals.clicks += c.clicks; totals.replies += c.replies;
       });
-    } else if (range === 'yesterday') {
-      const yDate = new Date(TODAY);
-      yDate.setDate(yDate.getDate() - 1);
-      const yStr = yDate.toISOString().slice(0, 10);
-      campaignKeys.forEach(k => {
-        const row = dailyData[k].find(d => d.date === yStr);
-        if (row) {
-          totals.sent += row.sent; totals.opens += row.opens; totals.clicks += row.clicks; totals.replies += row.replies;
-        }
-      });
     } else {
-      const days = range === 'today' ? 1 : range === '7d' ? 7 : null;
+      // Sum rows by calendar date (UTC), not row position — the row for the
+      // current day may not exist yet if the snapshot was pulled early.
+      const start = new Date(TODAY);
+      const end = new Date(TODAY);
+      if (range === 'yesterday') {
+        start.setUTCDate(start.getUTCDate() - 1);
+        end.setUTCDate(end.getUTCDate() - 1);
+      } else if (range === '7d') {
+        start.setUTCDate(start.getUTCDate() - 6);
+      } else if (range === '30d') {
+        start.setUTCDate(start.getUTCDate() - 29);
+      }
+      const startStr = start.toISOString().slice(0, 10);
+      const endStr = end.toISOString().slice(0, 10);
       campaignKeys.forEach(k => {
-        const r = sumDaily(dailyData[k], days);
+        const r = sumDailyRange(dailyData[k], startStr, endStr);
         totals.sent += r.sent; totals.opens += r.opens; totals.clicks += r.clicks; totals.replies += r.replies;
       });
     }
