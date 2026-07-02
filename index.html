@@ -166,7 +166,7 @@
     </div>
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
-      <div>Pulled July 1, 2026 · v8</div>
+      <div>Pulled July 2, 2026 · v8</div>
     </div>
   </header>
 
@@ -310,10 +310,10 @@
 <script>
   // Lifetime totals per campaign — live from Instantly analytics_campaign_overview, June 30 2026
   const lifetimeTotals = {
-    dental1: { name: "Dental Campaign", sent: 221, contacted: 169, opens: 33, clicks: 0, replies: 0, bounces: 4 },
+    dental1: { name: "Dental Campaign", sent: 221, contacted: 183, opens: 33, clicks: 0, replies: 0, bounces: 4 },
     hhNew: { name: "Home Health Care (New Leads)", sent: 50, contacted: 50, opens: 5, clicks: 0, replies: 0, bounces: 6 },
     dental2: { name: "Dental Campaign 2", sent: 90, contacted: 64, opens: 12, clicks: 0, replies: 0, bounces: 7 },
-    hh1to5: { name: "Home Health Care (1M - 5M)", sent: 138, contacted: 68, opens: 14, clicks: 0, replies: 0, bounces: 3 }
+    hh1to5: { name: "Home Health Care (1M - 5M)", sent: 138, contacted: 84, opens: 14, clicks: 0, replies: 0, bounces: 3 }
   };
 
   // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
@@ -359,7 +359,7 @@
     { name: "David Kennedy", email: "david@kennedycare.com", company: "Kennedy Care", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 2, replies: 0, lastOpen: "2026-07-01T13:01:53.142Z" }
   ];
 
-  const TODAY = new Date("2026-07-01T23:59:59Z");
+  const TODAY = new Date("2026-07-02T23:59:59Z");
 
   function withinRange(isoString, range){
     if (range === 'lifetime') return true;
