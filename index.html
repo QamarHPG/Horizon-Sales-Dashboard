@@ -41,6 +41,20 @@
   header .sub{font-size:13px;color:var(--text-muted);}
   header .meta{text-align:right;font-size:12px;color:var(--text-muted);}
   header .meta .live{color:var(--green);font-weight:600;}
+  header .meta .refresh-btn{
+    margin-top:6px;
+    font-size:12px;
+    font-weight:600;
+    padding:6px 14px;
+    border:1px solid var(--navy);
+    border-radius:8px;
+    background:var(--navy);
+    color:#fff;
+    cursor:pointer;
+  }
+  header .meta .refresh-btn:hover{opacity:.85;}
+  header .meta .refresh-btn:disabled{opacity:.55;cursor:default;}
+  header .meta .refresh-status{margin-top:4px;font-size:11px;}
 
   .controls{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
   .control-group{display:flex;flex-direction:column;gap:4px;}
@@ -167,6 +181,8 @@
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
       <div>Pulled July 2, 2026 · v8</div>
+      <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden>↻ Refresh now</button>
+      <div class="refresh-status" id="refreshStatus"></div>
     </div>
   </header>
 
@@ -513,6 +529,41 @@
   renderCampaignTable();
   renderRepeatOpeners();
   renderStepTable();
+
+  // --- Refresh button ---
+  // Set to the Cloudflare Worker URL to enable the button (see cloudflare-worker/README.md).
+  const REFRESH_WORKER_URL = "";
+
+  if (REFRESH_WORKER_URL) {
+    document.getElementById('refreshBtn').hidden = false;
+  }
+
+  async function triggerRefresh() {
+    const btn = document.getElementById('refreshBtn');
+    const status = document.getElementById('refreshStatus');
+    btn.disabled = true;
+    status.textContent = 'Starting refresh…';
+    try {
+      const res = await fetch(REFRESH_WORKER_URL, { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.detail || ('HTTP ' + res.status));
+      let remaining = 180; // workflow run + Pages redeploy
+      const tick = setInterval(() => {
+        remaining--;
+        const m = Math.floor(remaining / 60);
+        const s = String(remaining % 60).padStart(2, '0');
+        status.textContent = `Refresh running — reloading in ${m}:${s}`;
+        if (remaining <= 0) {
+          clearInterval(tick);
+          location.href = location.pathname + '?r=' + Date.now();
+        }
+      }, 1000);
+    } catch (err) {
+      status.textContent = 'Refresh failed: ' + err.message;
+      btn.disabled = false;
+    }
+  }
+  window.triggerRefresh = triggerRefresh;
 </script>
 </body>
 </html>
