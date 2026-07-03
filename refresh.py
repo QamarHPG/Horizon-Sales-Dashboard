@@ -80,6 +80,14 @@ def fetch_repeat_openers(campaign_key, campaign_id, campaign_name):
         for lead in items:
             oc = lead.get("email_open_count") or 0
             if oc >= 2:
+                # status_summary.lastStep.stepID is "seq_step_variant" with a
+                # 0-based step index, so step index + 1 = emails sent to this
+                # lead. 0 means unknown (no step info on the lead record).
+                step_id = ((lead.get("status_summary") or {}).get("lastStep") or {}).get("stepID", "")
+                try:
+                    emails_sent = int(step_id.split("_")[1]) + 1
+                except (IndexError, ValueError):
+                    emails_sent = 0
                 results.append({
                     "name": f"{lead.get('first_name', '')} {lead.get('last_name', '')}".strip(),
                     "email": lead.get("email", ""),
@@ -87,6 +95,7 @@ def fetch_repeat_openers(campaign_key, campaign_id, campaign_name):
                     "campaignKey": campaign_key,
                     "campaign": campaign_name,
                     "opens": oc,
+                    "emailsSent": emails_sent,
                     "replies": lead.get("email_reply_count") or 0,
                     "lastOpen": lead.get("timestamp_last_touch") or "",
                 })
@@ -230,6 +239,7 @@ def main():
         return (f'{{ name: {json.dumps(o["name"])}, email: {json.dumps(o["email"])}, '
                 f'company: {json.dumps(o["company"])}, campaignKey: {json.dumps(o["campaignKey"])}, '
                 f'campaign: {json.dumps(o["campaign"])}, opens: {o["opens"]}, '
+                f'emailsSent: {o["emailsSent"]}, '
                 f'replies: {o["replies"]}, lastOpen: {json.dumps(o["lastOpen"])} }}')
 
     ro_js = "[\n    " + ",\n    ".join(opener_js(o) for o in repeat_openers) + "\n  ]"

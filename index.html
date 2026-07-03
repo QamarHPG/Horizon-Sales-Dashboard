@@ -253,7 +253,7 @@
   </table>
 
   <div class="section-label">Re-engagement signal (multi-open leads)</div>
-  <div class="table-note">Now follows the date range and campaign dropdowns above. High repeat-open with no reply often means real interest without a strong enough reason to respond yet — worth a direct, personal follow-up outside the sequence. The hot leads (3+ opens, no reply) are flagged inside the list with a badge.<br><br><strong>Note on date range:</strong> Instantly's lead data only stores each lead's <em>total</em> open count and the timestamp of their <em>most recent</em> open — not a log of every open event. So "Last 7 days" here means "last opened within the past 7 days," using their lifetime open count — it's a recency filter, not a true count of opens that happened within that window. Lifetime and campaign filtering are both exact.</div>
+  <div class="table-note">Now follows the date range and campaign dropdowns above. High repeat-open with no reply often means real interest without a strong enough reason to respond yet — worth a direct, personal follow-up outside the sequence. Hot leads are those whose opens <em>exceed</em> the number of emails they've received (and no reply) — they came back to re-read at least one email, rather than just opening each email once.<br><br><strong>Note on date range:</strong> Instantly's lead data only stores each lead's <em>total</em> open count and the timestamp of their <em>most recent</em> open — not a log of every open event. So "Last 7 days" here means "last opened within the past 7 days," using their lifetime open count — it's a recency filter, not a true count of opens that happened within that window. Lifetime and campaign filtering are both exact.</div>
 
   <details class="expand">
     <summary>View repeat-openers list (<span id="repeatOpenersCount">0</span> leads, <span id="hotLeadsCount">0</span> hot)<span class="arrow">▶</span></summary>
@@ -266,6 +266,7 @@
             <th>Company</th>
             <th>Campaign</th>
             <th class="num">Opens</th>
+            <th class="num">Emails received</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -468,18 +469,25 @@
     );
   }
 
+  // Hot = more opens than emails received: the lead came back to re-read
+  // at least one email, a stronger signal than opening each email once.
+  // Falls back to 3+ opens when the emails-received count is unknown (0).
+  function isHotLead(r){
+    if (r.replies > 0) return false;
+    const sentTo = r.emailsSent || 0;
+    return sentTo > 0 ? r.opens > sentTo : r.opens >= 3;
+  }
+
   function renderRepeatOpeners(){
     const filtered = getFilteredRepeatOpeners();
     const sorted = [...filtered].sort((a,b) => b.opens - a.opens);
-    const hotThreshold = 3;
 
     const tbody = document.getElementById('repeatOpenersBody');
     tbody.innerHTML = sorted.length
       ? sorted.map(r => {
-          const isHot = r.opens >= hotThreshold && r.replies === 0;
           const status = r.replies > 0
             ? `<span class="badge good">Replied</span>`
-            : isHot
+            : isHotLead(r)
               ? `<span class="badge bad">Hot — no reply</span>`
               : `<span class="badge good">Watching</span>`;
           return `<tr>
@@ -488,14 +496,14 @@
             <td>${r.company}</td>
             <td>${r.campaign}</td>
             <td class="num"><span class="badge good">${r.opens}</span></td>
+            <td class="num">${r.emailsSent || '—'}</td>
             <td>${status}</td>
           </tr>`;
         }).join('')
-      : `<tr><td colspan="6" class="table-note" style="margin:0;">No repeat openers match this date range and campaign.</td></tr>`;
+      : `<tr><td colspan="7" class="table-note" style="margin:0;">No repeat openers match this date range and campaign.</td></tr>`;
 
     document.getElementById('repeatOpenersCount').textContent = filtered.length;
-    const hotCount = sorted.filter(r => r.opens >= hotThreshold && r.replies === 0).length;
-    document.getElementById('hotLeadsCount').textContent = hotCount;
+    document.getElementById('hotLeadsCount').textContent = sorted.filter(isHotLead).length;
   }
 
   function renderKPIs(){
