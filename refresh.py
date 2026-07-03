@@ -106,7 +106,7 @@ def build_lifetime(overview, campaign_name):
         "bounces": overview.get("bounced_count", 0),
     }
 
-def build_daily_rows(rows):
+def build_daily_rows(rows, today_iso):
     out = []
     for r in rows:
         out.append({
@@ -116,6 +116,20 @@ def build_daily_rows(rows):
             "clicks": r.get("clicks", 0),
             "replies": r.get("replies", 0),
         })
+    # Instantly buckets days by UTC. Between 8 PM ET and midnight ET the
+    # current UTC day is already "tomorrow", so activity from this evening
+    # lands in a bucket dated past the ET today. Fold those buckets into
+    # today's row so the Today filter counts the full ET calendar day.
+    future = [r for r in out if r["date"] > today_iso]
+    if future:
+        out = [r for r in out if r["date"] <= today_iso]
+        today_row = next((r for r in out if r["date"] == today_iso), None)
+        if today_row is None:
+            today_row = {"date": today_iso, "sent": 0, "opens": 0, "clicks": 0, "replies": 0}
+            out.append(today_row)
+        for r in future:
+            for k in ("sent", "opens", "clicks", "replies"):
+                today_row[k] += r[k]
     return out
 
 def build_step_sends(steps, max_steps):
@@ -178,7 +192,7 @@ def main():
         lifetime_totals[key] = build_lifetime(overview, cname)
 
         rows = fetch_daily(cid, days=30)
-        daily_data[key] = build_daily_rows(rows)
+        daily_data[key] = build_daily_rows(rows, today_iso)
 
         steps = fetch_steps(cid)
         step_sends[key] = {

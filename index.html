@@ -432,27 +432,31 @@
     return { startStr, endStr };
   }
 
+  // Calendar day (YYYY-MM-DD) of a timestamp in Eastern time. lastOpen
+  // timestamps are UTC instants; the dashboard promises ET, so an open at
+  // 9 PM ET belongs to that ET day even though it's already tomorrow in UTC.
+  function etDayStr(isoString){
+    return new Date(isoString).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+  }
+
+  function shiftDayStr(dayStr, days){
+    const d = new Date(dayStr + 'T12:00:00Z'); // noon avoids DST edge cases
+    d.setUTCDate(d.getUTCDate() + days);
+    return d.toISOString().slice(0, 10);
+  }
+
   function withinRange(isoString, range){
     if (range === 'lifetime') return true;
+    const day = etDayStr(isoString);
+    const todayStr = TODAY.toISOString().slice(0, 10); // stamped as the ET date by refresh.py
     if (range === 'custom') {
       const { startStr, endStr } = getCustomRange();
-      const dayStr = isoString.slice(0, 10);
-      return dayStr >= startStr && dayStr <= endStr;
+      return day >= startStr && day <= endStr;
     }
-    const d = new Date(isoString);
-    if (range === 'yesterday') {
-      const start = new Date(TODAY);
-      start.setDate(start.getDate() - 1);
-      start.setUTCHours(0, 0, 0, 0);
-      const end = new Date(TODAY);
-      end.setDate(end.getDate() - 1);
-      end.setUTCHours(23, 59, 59, 999);
-      return d >= start && d <= end;
-    }
-    const days = range === 'today' ? 1 : range === '7d' ? 7 : 30;
-    const cutoff = new Date(TODAY);
-    cutoff.setDate(cutoff.getDate() - days);
-    return d >= cutoff;
+    if (range === 'today') return day === todayStr;
+    if (range === 'yesterday') return day === shiftDayStr(todayStr, -1);
+    const days = range === '7d' ? 6 : 29;
+    return day >= shiftDayStr(todayStr, -days) && day <= todayStr;
   }
 
   function getFilteredRepeatOpeners(){
