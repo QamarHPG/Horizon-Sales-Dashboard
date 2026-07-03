@@ -70,6 +70,18 @@
     font-family:inherit;
   }
   select:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .date-pair{display:flex;align-items:center;gap:8px;}
+  .date-pair .date-sep{font-size:12px;color:var(--text-muted);}
+  input[type="date"]{
+    font-size:14px;
+    padding:7px 10px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--card);
+    color:var(--text);
+    font-family:inherit;
+  }
+  input[type="date"]:focus{outline:2px solid var(--gold);outline-offset:1px;}
 
   .section-label{
     font-size:12px;
@@ -189,13 +201,22 @@
   <div class="controls">
     <div class="control-group">
       <label for="dateRange">Date range</label>
-      <select id="dateRange" onchange="renderKPIs(); renderRepeatOpeners();">
+      <select id="dateRange" onchange="onRangeChange();">
         <option value="today">Today</option>
         <option value="yesterday">Yesterday</option>
         <option value="7d">Last 7 days</option>
         <option value="30d" selected>Last 30 days</option>
         <option value="lifetime">Lifetime (since campaign launch)</option>
+        <option value="custom">Custom range…</option>
       </select>
+    </div>
+    <div class="control-group" id="customDates" hidden>
+      <label for="customFrom">Custom dates</label>
+      <div class="date-pair">
+        <input type="date" id="customFrom" onchange="renderKPIs(); renderRepeatOpeners();">
+        <span class="date-sep">to</span>
+        <input type="date" id="customTo" onchange="renderKPIs(); renderRepeatOpeners();">
+      </div>
     </div>
     <div class="control-group">
       <label for="campaignFilter">Campaign</label>
@@ -379,8 +400,44 @@
 
   const TODAY = new Date("2026-07-02T23:59:59Z");
 
+  function onRangeChange(){
+    const isCustom = document.getElementById('dateRange').value === 'custom';
+    const box = document.getElementById('customDates');
+    box.hidden = !isCustom;
+    if (isCustom) {
+      const fromEl = document.getElementById('customFrom');
+      const toEl = document.getElementById('customTo');
+      const todayStr = TODAY.toISOString().slice(0, 10);
+      if (!fromEl.value) {
+        // Default to the earliest date we have daily data for
+        const allDates = Object.values(dailyData).flat().map(d => d.date);
+        fromEl.value = allDates.length ? allDates.reduce((a,b) => a < b ? a : b) : todayStr;
+      }
+      if (!toEl.value) toEl.value = todayStr;
+      fromEl.max = todayStr;
+      toEl.max = todayStr;
+    }
+    renderKPIs();
+    renderRepeatOpeners();
+  }
+
+  function getCustomRange(){
+    const from = document.getElementById('customFrom').value;
+    const to = document.getElementById('customTo').value;
+    const todayStr = TODAY.toISOString().slice(0, 10);
+    let startStr = from || '0000-01-01';
+    let endStr = to || todayStr;
+    if (startStr > endStr) [startStr, endStr] = [endStr, startStr];
+    return { startStr, endStr };
+  }
+
   function withinRange(isoString, range){
     if (range === 'lifetime') return true;
+    if (range === 'custom') {
+      const { startStr, endStr } = getCustomRange();
+      const dayStr = isoString.slice(0, 10);
+      return dayStr >= startStr && dayStr <= endStr;
+    }
     const d = new Date(isoString);
     if (range === 'yesterday') {
       const start = new Date(TODAY);
@@ -447,6 +504,12 @@
       campaignKeys.forEach(k => {
         const c = lifetimeTotals[k];
         totals.sent += c.sent; totals.opens += c.opens; totals.clicks += c.clicks; totals.replies += c.replies;
+      });
+    } else if (range === 'custom') {
+      const { startStr, endStr } = getCustomRange();
+      campaignKeys.forEach(k => {
+        const r = sumDailyRange(dailyData[k], startStr, endStr);
+        totals.sent += r.sent; totals.opens += r.opens; totals.clicks += r.clicks; totals.replies += r.replies;
       });
     } else {
       // Sum rows by calendar date (UTC), not row position — the row for the
