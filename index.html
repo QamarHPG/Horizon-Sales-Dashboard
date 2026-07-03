@@ -192,7 +192,7 @@
     </div>
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
-      <div>Pulled July 2, 2026 · v8</div>
+      <div>Pulled July 3, 2026 · v8</div>
       <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden>↻ Refresh now</button>
       <div class="refresh-status" id="refreshStatus"></div>
     </div>
@@ -304,7 +304,7 @@
     <tbody>
       <tr>
         <td>Open rate</td>
-        <td class="num">11.8%</td>
+        <td class="num">12.1%</td>
         <td class="num">27.7% – 44%</td>
         <td class="num">40% – 60%</td>
         <td class="num">65%+</td>
@@ -347,10 +347,10 @@
 <script>
   // Lifetime totals per campaign — live from Instantly analytics_campaign_overview, June 30 2026
   const lifetimeTotals = {
-    dental1: { name: "Dental Campaign", sent: 235, contacted: 183, opens: 33, clicks: 0, replies: 0, bounces: 4 },
-    hhNew: { name: "Home Health Care (New Leads)", sent: 75, contacted: 52, opens: 7, clicks: 0, replies: 0, bounces: 6 },
+    dental1: { name: "Dental Campaign", sent: 235, contacted: 197, opens: 33, clicks: 0, replies: 0, bounces: 4 },
+    hhNew: { name: "Home Health Care (New Leads)", sent: 75, contacted: 52, opens: 9, clicks: 0, replies: 0, bounces: 6 },
     dental2: { name: "Dental Campaign 2", sent: 105, contacted: 65, opens: 12, clicks: 0, replies: 0, bounces: 7 },
-    hh1to5: { name: "Home Health Care (1M - 5M)", sent: 154, contacted: 84, opens: 15, clicks: 0, replies: 0, bounces: 3 }
+    hh1to5: { name: "Home Health Care (1M - 5M)", sent: 154, contacted: 91, opens: 15, clicks: 0, replies: 0, bounces: 3 }
   };
 
   // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
@@ -359,7 +359,7 @@
       {date:"2026-06-18",sent:9,opens:0,clicks:0,replies:0},{date:"2026-06-19",sent:20,opens:1,clicks:0,replies:0},{date:"2026-06-20",sent:20,opens:2,clicks:0,replies:0},{date:"2026-06-21",sent:20,opens:5,clicks:0,replies:0},{date:"2026-06-22",sent:20,opens:4,clicks:0,replies:0},{date:"2026-06-23",sent:20,opens:7,clicks:0,replies:0},{date:"2026-06-24",sent:14,opens:5,clicks:0,replies:0},{date:"2026-06-25",sent:14,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:13,opens:2,clicks:0,replies:0},{date:"2026-06-27",sent:14,opens:0,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-29",sent:14,opens:2,clicks:0,replies:0},{date:"2026-06-30",sent:14,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:14,opens:1,clicks:0,replies:0},{date:"2026-07-02",sent:14,opens:0,clicks:0,replies:0}
     ],
     hhNew: [
-      {date:"2026-06-30",sent:25,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:25,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:25,opens:2,clicks:0,replies:0}
+      {date:"2026-06-30",sent:25,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:25,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:25,opens:3,clicks:0,replies:0},{date:"2026-07-03",sent:0,opens:1,clicks:0,replies:0}
     ],
     dental2: [
       {date:"2026-06-26",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:3,clicks:0,replies:0},{date:"2026-06-29",sent:15,opens:4,clicks:0,replies:0},{date:"2026-06-30",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-01",sent:15,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:15,opens:0,clicks:0,replies:0}
@@ -392,13 +392,14 @@
     { name: "Lindsey Brannan", email: "lindsey@vitalitypilatesaustin.com", company: "Vitality", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-07-02T15:00:39.238Z" },
     { name: "Steve Anderson", email: "steve@dencodental.com", company: "Denco Dental Construction", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-26T15:10:42.739Z" },
     { name: "Sima Patel", email: "spateldds@lakemoordental.com", company: "Lakemoor Dental", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, replies: 0, lastOpen: "2026-06-22T15:43:03.312Z" },
+    { name: "Erwin Allado", email: "erwin@seniorcarehomes.com", company: "Senior Care Homes", campaignKey: "hhNew", campaign: "Home Health Care (New Leads)", opens: 2, replies: 0, lastOpen: "2026-07-02T15:11:45.043Z" },
     { name: "Chris McDermott", email: "chris@grinderhaizlip.com", company: "Grinder Haizlip Construction General Contractors", campaignKey: "dental2", campaign: "Dental Campaign 2", opens: 2, replies: 0, lastOpen: "2026-07-01T13:42:04.139Z" },
     { name: "Steven Freeman", email: "amy@elitesmilesdentistry.com", company: "Elite Smiles Dentistry", campaignKey: "dental2", campaign: "Dental Campaign 2", opens: 2, replies: 0, lastOpen: "2026-06-29T13:05:31.851Z" },
     { name: "David Kennedy", email: "david@kennedycare.com", company: "Kennedy Care", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 2, replies: 0, lastOpen: "2026-07-01T13:01:53.142Z" },
     { name: "Corey Centen", email: "corey@bodyport.com", company: "Bodyport", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 2, replies: 0, lastOpen: "2026-07-02T14:45:19.418Z" }
   ];
 
-  const TODAY = new Date("2026-07-02T23:59:59Z");
+  const TODAY = new Date("2026-07-03T23:59:59Z");
 
   function onRangeChange(){
     const isCustom = document.getElementById('dateRange').value === 'custom';
