@@ -5,6 +5,12 @@ import os
 import re
 import sys
 from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
+
+# The dashboard advertises "Times in Eastern (ET)". Compute "today" in ET,
+# not UTC — after 8 PM ET the UTC date has already rolled to tomorrow, which
+# made the Today filter point at a day with no sends yet.
+ET = ZoneInfo("America/New_York")
 import requests
 
 API_KEY = os.environ.get("INSTANTLY_API_KEY", "")
@@ -152,8 +158,8 @@ def pct(n, d):
     return f"{(n / d * 100):.1f}" if d else "0.0"
 
 def main():
-    today = datetime.now(timezone.utc).strftime("%B %-d, %Y")
-    today_iso = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    today = datetime.now(ET).strftime("%B %-d, %Y")
+    today_iso = datetime.now(ET).strftime("%Y-%m-%d")
 
     print("Fetching Instantly data...")
 
