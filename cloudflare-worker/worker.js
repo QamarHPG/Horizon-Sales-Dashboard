@@ -9,6 +9,7 @@ const GITHUB_REPO = "QamarHPG/Horizon-Sales-Dashboard";
 const WORKFLOW_FILE = "refresh-dashboard.yml";
 const ALLOWED_ORIGINS = [
   "https://qamarhpg.github.io",
+  "https://horizon-sales-dashboard.qamar-76f.workers.dev",
 ];
 
 function corsHeaders(origin) {
