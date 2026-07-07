@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "horizon-sales-dashboard",
+  "compatibility_date": "2026-07-07",
+  "main": "worker-auth.js",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  }
+}
