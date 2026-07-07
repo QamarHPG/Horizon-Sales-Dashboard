@@ -5,10 +5,10 @@
 // Required secret (set in Cloudflare, never in this file):
 //   GITHUB_TOKEN — a GitHub PAT with permission to dispatch Actions on the repo.
 
-const GITHUB_REPO = "qmrabs-design/Horizon-Sales-Dashboard";
+const GITHUB_REPO = "QamarHPG/Horizon-Sales-Dashboard";
 const WORKFLOW_FILE = "refresh-dashboard.yml";
 const ALLOWED_ORIGINS = [
-  "https://qmrabs-design.github.io",
+  "https://qamarhpg.github.io",
 ];
 
 function corsHeaders(origin) {
