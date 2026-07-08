@@ -306,7 +306,7 @@
   </table>
 
   <div class="section-label">How your numbers compare to 2026 industry benchmarks</div>
-  <div class="table-note">Your lifetime blended rate across all <span id="activeCampaignCount">0</span> active campaigns vs. published 2026 cold email benchmarks. Sources below the table.</div>
+  <div class="table-note">Your lifetime blended rate across all <span id="activeCampaignCount">5</span> active campaigns vs. published 2026 cold email benchmarks. Sources below the table.</div>
   <table>
     <thead>
       <tr>
@@ -363,34 +363,41 @@
 <script>
   // Lifetime totals per campaign — live from Instantly analytics_campaign_overview, June 30 2026
   const lifetimeTotals = {
-    dental1: { name: "Dental Campaign", sent: 320, contacted: 267, opens: 47, clicks: 0, replies: 0, bounces: 4 },
-    hhNew: { name: "Home Health Care (New Leads)", sent: 225, contacted: 82, opens: 38, clicks: 0, replies: 0, bounces: 10 },
-    dental2: { name: "Dental Campaign 2", sent: 195, contacted: 136, opens: 22, clicks: 0, replies: 0, bounces: 8 },
-    hh1to5: { name: "Home Health Care (1M - 5M)", sent: 249, contacted: 187, opens: 23, clicks: 0, replies: 0, bounces: 4 },
-    medspa: { name: "Med SPA Campaign", sent: 5, contacted: 5, opens: 0, clicks: 0, replies: 0, bounces: 0 }
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 5, contacted: 5, opens: 0, clicks: 0, replies: 0, bounces: 0 },
+    "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", sent: 320, contacted: 267, opens: 47, clicks: 0, replies: 0, bounces: 4 },
+    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", sent: 225, contacted: 82, opens: 38, clicks: 0, replies: 0, bounces: 10 },
+    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", sent: 195, contacted: 136, opens: 22, clicks: 0, replies: 0, bounces: 8 },
+    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", sent: 249, contacted: 187, opens: 23, clicks: 0, replies: 0, bounces: 4 }
   };
 
   // Lifetime totals across every non-draft campaign (active, paused, completed) —
   // auto-discovered from Instantly and rebuilt on every refresh.
   const allCampaignsLifetime = {
+    "b679c367-3b91-4411-b351-af7a4185310b": { name: "Home Health Care 1", status: "paused", sent: 194, opens: 39, replies: 1, bounces: 3 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "active", sent: 5, opens: 0, replies: 0, bounces: 0 },
+    "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", status: "active", sent: 320, opens: 47, replies: 0, bounces: 4 },
+    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", status: "active", sent: 225, opens: 38, replies: 0, bounces: 10 },
+    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", status: "active", sent: 195, opens: 22, replies: 0, bounces: 8 },
+    "2566e143-6adb-468f-a604-1d1475b5e32b": { name: "Dental, Med SPA, Janitorial", status: "paused", sent: 188, opens: 30, replies: 0, bounces: 3 },
+    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", status: "active", sent: 249, opens: 23, replies: 0, bounces: 4 }
   };
 
   // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
   const dailyData = {
-    dental1: [
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": [
+      {date:"2026-07-08",sent:5,opens:0,clicks:0,replies:0}
+    ],
+    "a4a98af6-b3af-4332-9e14-d59c0a30e860": [
       {date:"2026-06-18",sent:9,opens:0,clicks:0,replies:0},{date:"2026-06-19",sent:20,opens:1,clicks:0,replies:0},{date:"2026-06-20",sent:20,opens:2,clicks:0,replies:0},{date:"2026-06-21",sent:20,opens:5,clicks:0,replies:0},{date:"2026-06-22",sent:20,opens:4,clicks:0,replies:0},{date:"2026-06-23",sent:20,opens:7,clicks:0,replies:0},{date:"2026-06-24",sent:14,opens:5,clicks:0,replies:0},{date:"2026-06-25",sent:14,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:13,opens:2,clicks:0,replies:0},{date:"2026-06-27",sent:14,opens:0,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-29",sent:14,opens:2,clicks:0,replies:0},{date:"2026-06-30",sent:14,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:14,opens:1,clicks:0,replies:0},{date:"2026-07-02",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-03",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-04",sent:14,opens:2,clicks:0,replies:0},{date:"2026-07-05",sent:14,opens:2,clicks:0,replies:0},{date:"2026-07-06",sent:14,opens:6,clicks:0,replies:0},{date:"2026-07-07",sent:14,opens:3,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:1,clicks:0,replies:0}
     ],
-    hhNew: [
+    "8b497725-593b-4df8-850c-c9865d048d31": [
       {date:"2026-06-30",sent:25,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:25,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:25,opens:3,clicks:0,replies:0},{date:"2026-07-03",sent:25,opens:5,clicks:0,replies:0},{date:"2026-07-04",sent:25,opens:3,clicks:0,replies:0},{date:"2026-07-05",sent:25,opens:8,clicks:0,replies:0},{date:"2026-07-06",sent:25,opens:2,clicks:0,replies:0},{date:"2026-07-07",sent:25,opens:8,clicks:0,replies:0},{date:"2026-07-08",sent:25,opens:4,clicks:0,replies:0}
     ],
-    dental2: [
+    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": [
       {date:"2026-06-26",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:3,clicks:0,replies:0},{date:"2026-06-29",sent:15,opens:4,clicks:0,replies:0},{date:"2026-06-30",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-01",sent:15,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-03",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-04",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-05",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-06",sent:15,opens:4,clicks:0,replies:0},{date:"2026-07-07",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:2,clicks:0,replies:0}
     ],
-    hh1to5: [
+    "07bee31e-9703-4058-9a61-507e2f4840a7": [
       {date:"2026-06-23",sent:10,opens:1,clicks:0,replies:0},{date:"2026-06-24",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-25",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:17,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:16,opens:1,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-29",sent:16,opens:3,clicks:0,replies:0},{date:"2026-06-30",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:16,opens:3,clicks:0,replies:0},{date:"2026-07-02",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-03",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-04",sent:16,opens:0,clicks:0,replies:0},{date:"2026-07-05",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-06",sent:16,opens:5,clicks:0,replies:0},{date:"2026-07-07",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:0,clicks:0,replies:0}
-    ],
-    medspa: [
-      {date:"2026-07-08",sent:5,opens:0,clicks:0,replies:0}
     ]
   };
 
@@ -407,29 +414,29 @@
 
   // Repeat openers — live from Instantly list_leads, June 30 2026
   const repeatOpeners = [
-    { name: "Kate Allado", email: "kate@seniorcarehomes.com", company: "Senior Care Homes", campaignKey: "hhNew", campaign: "Home Health Care (New Leads)", opens: 9, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T15:01:51.210Z" },
-    { name: "Sima Patel", email: "spateldds@lakemoordental.com", company: "Lakemoor Dental", campaignKey: "dental1", campaign: "Dental Campaign", opens: 6, emailsSent: 3, replies: 0, lastOpen: "2026-07-07T15:09:32.318Z" },
-    { name: "June Fidger", email: "echetwood@ahiabenefits.com", company: "Affordable Health Insurance Agency", campaignKey: "dental1", campaign: "Dental Campaign", opens: 5, emailsSent: 4, replies: 0, lastOpen: "2026-06-30T14:13:24.544Z" },
-    { name: "Steve Anderson", email: "steve@dencodental.com", company: "Denco Dental Construction", campaignKey: "dental1", campaign: "Dental Campaign", opens: 5, emailsSent: 4, replies: 0, lastOpen: "2026-07-06T13:13:10.438Z" },
-    { name: "Erwin Allado", email: "erwin@seniorcarehomes.com", company: "Senior Care Homes", campaignKey: "hhNew", campaign: "Home Health Care (New Leads)", opens: 5, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T15:10:52.479Z" },
-    { name: "Kimberly Moss", email: "kim@pegasushomecare.com", company: "Pegasus Home Health Care", campaignKey: "hhNew", campaign: "Home Health Care (New Leads)", opens: 5, emailsSent: 5, replies: 0, lastOpen: "2026-07-08T13:05:46.282Z" },
-    { name: "Lindsey Brannan", email: "lindsey@vitalitypilatesaustin.com", company: "Vitality", campaignKey: "dental1", campaign: "Dental Campaign", opens: 4, emailsSent: 4, replies: 0, lastOpen: "2026-07-04T13:43:34.034Z" },
-    { name: "Shelley Wilson", email: "shelley@wilsoncare.com", company: "Wilson Care Group", campaignKey: "hhNew", campaign: "Home Health Care (New Leads)", opens: 4, emailsSent: 4, replies: 0, lastOpen: "2026-07-08T13:24:52.022Z" },
-    { name: "Steven Freeman", email: "amy@elitesmilesdentistry.com", company: "Elite Smiles Dentistry", campaignKey: "dental2", campaign: "Dental Campaign 2", opens: 4, emailsSent: 3, replies: 0, lastOpen: "2026-07-07T13:04:33.030Z" },
-    { name: "Daniel Blatt", email: "dblatt@nmsincusa.com", company: "Nationwide Medical Surgical", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 4, emailsSent: 4, replies: 0, lastOpen: "2026-07-01T14:51:20.068Z" },
-    { name: "Kevin Snyder", email: "drsnyder@harbourdental.care", company: "Harbour Dental Care", campaignKey: "dental1", campaign: "Dental Campaign", opens: 3, emailsSent: 4, replies: 0, lastOpen: "2026-06-29T13:07:12.555Z" },
-    { name: "Bobby Middle", email: "bobby@fivestarortho.com", company: "Five Star Orthodontic Lab & Supply", campaignKey: "dental1", campaign: "Dental Campaign", opens: 3, emailsSent: 4, replies: 0, lastOpen: "2026-07-02T13:05:14.103Z" },
-    { name: "Jonathan Kendrick", email: "jonathan@dtpartners.com", company: "Digital Technology", campaignKey: "dental1", campaign: "Dental Campaign", opens: 3, emailsSent: 3, replies: 0, lastOpen: "2026-07-07T13:31:04.352Z" },
-    { name: "Joe Fisher", email: "joe@renewalmemory.org", company: "Renewal Memory", campaignKey: "hhNew", campaign: "Home Health Care (New Leads)", opens: 3, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T16:23:05.187Z" },
-    { name: "Shane Costa", email: "drcosta@costasmiles.com", company: "Costa Dentistry", campaignKey: "dental2", campaign: "Dental Campaign 2", opens: 3, emailsSent: 3, replies: 0, lastOpen: "2026-07-06T14:38:09.504Z" },
-    { name: "Shane Perrault", email: "shane@kencodevelopment.com", company: "KENCO DEVELOPMENT", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-06-29T14:14:38.452Z" },
-    { name: "Hisham Elzein", email: "hisham@zisinsurance.com", company: "Zein Insurance Services", campaignKey: "dental1", campaign: "Dental Campaign", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-04T13:33:33.305Z" },
-    { name: "Melanie Hall", email: "mhall@hospiceofhuntington.org", company: "Hospice of Huntington", campaignKey: "hhNew", campaign: "Home Health Care (New Leads)", opens: 2, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T13:58:41.143Z" },
-    { name: "John Bloodsworth", email: "jay@blhc.org", company: "A Better Living Home Care Agency", campaignKey: "hhNew", campaign: "Home Health Care (New Leads)", opens: 2, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T15:28:55.303Z" },
-    { name: "Chris McDermott", email: "chris@grinderhaizlip.com", company: "Grinder Haizlip Construction General Contractors", campaignKey: "dental2", campaign: "Dental Campaign 2", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-05T13:31:37.670Z" },
-    { name: "David Kennedy", email: "david@kennedycare.com", company: "Kennedy Care", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-01T13:01:53.142Z" },
-    { name: "Corey Centen", email: "corey@bodyport.com", company: "Bodyport", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-02T14:45:19.418Z" },
-    { name: "Alyssa Moore", email: "alyssa@spren.com", company: "Spren", campaignKey: "hh1to5", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-07T15:24:32.695Z" }
+    { name: "Kate Allado", email: "kate@seniorcarehomes.com", company: "Senior Care Homes", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 9, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T15:01:51.210Z" },
+    { name: "Sima Patel", email: "spateldds@lakemoordental.com", company: "Lakemoor Dental", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 6, emailsSent: 3, replies: 0, lastOpen: "2026-07-07T15:09:32.318Z" },
+    { name: "June Fidger", email: "echetwood@ahiabenefits.com", company: "Affordable Health Insurance Agency", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 5, emailsSent: 4, replies: 0, lastOpen: "2026-06-30T14:13:24.544Z" },
+    { name: "Steve Anderson", email: "steve@dencodental.com", company: "Denco Dental Construction", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 5, emailsSent: 4, replies: 0, lastOpen: "2026-07-06T13:13:10.438Z" },
+    { name: "Erwin Allado", email: "erwin@seniorcarehomes.com", company: "Senior Care Homes", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 5, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T15:10:52.479Z" },
+    { name: "Kimberly Moss", email: "kim@pegasushomecare.com", company: "Pegasus Home Health Care", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 5, emailsSent: 5, replies: 0, lastOpen: "2026-07-08T13:05:46.282Z" },
+    { name: "Lindsey Brannan", email: "lindsey@vitalitypilatesaustin.com", company: "Vitality", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 4, emailsSent: 4, replies: 0, lastOpen: "2026-07-04T13:43:34.034Z" },
+    { name: "Shelley Wilson", email: "shelley@wilsoncare.com", company: "Wilson Care Group", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 4, emailsSent: 4, replies: 0, lastOpen: "2026-07-08T13:24:52.022Z" },
+    { name: "Steven Freeman", email: "amy@elitesmilesdentistry.com", company: "Elite Smiles Dentistry", campaignKey: "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", campaign: "Dental Campaign 2", opens: 4, emailsSent: 3, replies: 0, lastOpen: "2026-07-07T13:04:33.030Z" },
+    { name: "Daniel Blatt", email: "dblatt@nmsincusa.com", company: "Nationwide Medical Surgical", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 4, emailsSent: 4, replies: 0, lastOpen: "2026-07-01T14:51:20.068Z" },
+    { name: "Kevin Snyder", email: "drsnyder@harbourdental.care", company: "Harbour Dental Care", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 3, emailsSent: 4, replies: 0, lastOpen: "2026-06-29T13:07:12.555Z" },
+    { name: "Bobby Middle", email: "bobby@fivestarortho.com", company: "Five Star Orthodontic Lab & Supply", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 3, emailsSent: 4, replies: 0, lastOpen: "2026-07-02T13:05:14.103Z" },
+    { name: "Jonathan Kendrick", email: "jonathan@dtpartners.com", company: "Digital Technology", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 3, emailsSent: 3, replies: 0, lastOpen: "2026-07-07T13:31:04.352Z" },
+    { name: "Joe Fisher", email: "joe@renewalmemory.org", company: "Renewal Memory", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 3, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T16:23:05.187Z" },
+    { name: "Shane Costa", email: "drcosta@costasmiles.com", company: "Costa Dentistry", campaignKey: "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", campaign: "Dental Campaign 2", opens: 3, emailsSent: 3, replies: 0, lastOpen: "2026-07-06T14:38:09.504Z" },
+    { name: "Shane Perrault", email: "shane@kencodevelopment.com", company: "KENCO DEVELOPMENT", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-06-29T14:14:38.452Z" },
+    { name: "Hisham Elzein", email: "hisham@zisinsurance.com", company: "Zein Insurance Services", campaignKey: "a4a98af6-b3af-4332-9e14-d59c0a30e860", campaign: "Dental Campaign", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-04T13:33:33.305Z" },
+    { name: "Melanie Hall", email: "mhall@hospiceofhuntington.org", company: "Hospice of Huntington", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 2, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T13:58:41.143Z" },
+    { name: "John Bloodsworth", email: "jay@blhc.org", company: "A Better Living Home Care Agency", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 2, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T15:28:55.303Z" },
+    { name: "Chris McDermott", email: "chris@grinderhaizlip.com", company: "Grinder Haizlip Construction General Contractors", campaignKey: "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", campaign: "Dental Campaign 2", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-05T13:31:37.670Z" },
+    { name: "David Kennedy", email: "david@kennedycare.com", company: "Kennedy Care", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-01T13:01:53.142Z" },
+    { name: "Corey Centen", email: "corey@bodyport.com", company: "Bodyport", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-02T14:45:19.418Z" },
+    { name: "Alyssa Moore", email: "alyssa@spren.com", company: "Spren", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-07T15:24:32.695Z" }
   ];
 
   const TODAY = new Date("2026-07-08T23:59:59Z");
@@ -618,11 +625,11 @@
   // Step-level send volume — live from Instantly analytics_campaign_steps, June 30 2026
   // null = sequence doesn't have this many steps; 0 = has the step but no leads reached it yet
   const stepSends = {
-    dental1: { maxSteps: 4, sends: [93, 85, 79, 63, null] },
-    hhNew: { maxSteps: 5, sends: [59, 49, 47, 45, 25] },
-    dental2: { maxSteps: 4, sends: [67, 59, 54, 15, null] },
-    hh1to5: { maxSteps: 4, sends: [68, 63, 62, 56, null] },
-    medspa: { maxSteps: 4, sends: [5, 0, 0, 0, null] }
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", maxSteps: 4, sends: [5, 0, 0, 0, null] },
+    "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", maxSteps: 4, sends: [93, 85, 79, 63, null] },
+    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", maxSteps: 5, sends: [59, 49, 47, 45, 25] },
+    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", maxSteps: 4, sends: [67, 59, 54, 15, null] },
+    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", maxSteps: 4, sends: [68, 63, 62, 56, null] }
   };
 
   function renderStepTable(){
