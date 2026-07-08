@@ -25,6 +25,18 @@ jobs:
         env:
           INSTANTLY_API_KEY: ${{ secrets.INSTANTLY_API_KEY }}
 
+      - name: Send daily email summary
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Horizon Dashboard — Daily Summary"
+          to: qamar@horizonpathgroup.net,Sannan@horizonpathgroup.com
+          from: Horizon Dashboard <${{ secrets.MAIL_USERNAME }}>
+          html_body: file://email_summary.html
+
       - name: Commit and push if changed
         run: |
           git config user.email "dashboard-bot@horizonpathgroup.com"

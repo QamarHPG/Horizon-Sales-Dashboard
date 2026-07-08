@@ -180,6 +180,53 @@ def build_js_object(d):
 def pct(n, d):
     return f"{(n / d * 100):.1f}" if d else "0.0"
 
+def build_email_summary(daily_data, campaigns, today_iso, today_label):
+    rows = []
+    total = {"sent": 0, "opens": 0, "clicks": 0, "replies": 0}
+    for key, camp in campaigns.items():
+        today_row = next((r for r in daily_data[key] if r["date"] == today_iso), None)
+        stats = today_row or {"sent": 0, "opens": 0, "clicks": 0, "replies": 0}
+        rows.append((camp["name"], stats["sent"], stats["opens"], stats["clicks"], stats["replies"]))
+        for k in total:
+            total[k] += stats[k]
+
+    def cells(name, sent, opens, clicks, replies):
+        return (f"<td style='padding:4px 12px;'>{name}</td>"
+                f"<td style='padding:4px 12px;text-align:right;'>{sent}</td>"
+                f"<td style='padding:4px 12px;text-align:right;'>{opens}</td>"
+                f"<td style='padding:4px 12px;text-align:right;'>{clicks}</td>"
+                f"<td style='padding:4px 12px;text-align:right;'>{replies}</td>")
+
+    body_rows = "\n".join(f"<tr>{cells(*r)}</tr>" for r in rows)
+    total_row = (f"<tr style='font-weight:bold;border-top:2px solid #ccc;'>"
+                 f"{cells('Total', total['sent'], total['opens'], total['clicks'], total['replies'])}</tr>")
+
+    html = f"""<div style="font-family:Arial,sans-serif;">
+  <h2 style="margin-bottom:4px;">Horizon Path Group — Daily Dashboard Summary</h2>
+  <p style="color:#555;margin-top:0;">{today_label}</p>
+  <table style="border-collapse:collapse;font-size:14px;">
+    <thead>
+      <tr style="background:#f0f0f0;">
+        <th style="padding:4px 12px;text-align:left;">Campaign</th>
+        <th style="padding:4px 12px;text-align:right;">Sent</th>
+        <th style="padding:4px 12px;text-align:right;">Opens</th>
+        <th style="padding:4px 12px;text-align:right;">Clicks</th>
+        <th style="padding:4px 12px;text-align:right;">Replies</th>
+      </tr>
+    </thead>
+    <tbody>
+      {body_rows}
+      {total_row}
+    </tbody>
+  </table>
+  <p style="margin-top:16px;">
+    <a href="https://horizon-sales-dashboard.qamar-76f.workers.dev">View full dashboard &rarr;</a>
+  </p>
+</div>
+"""
+    with open("email_summary.html", "w", encoding="utf-8") as f:
+        f.write(html)
+
 def main():
     today = datetime.now(ET).strftime("%B %-d, %Y")
     today_iso = datetime.now(ET).strftime("%Y-%m-%d")
@@ -213,6 +260,8 @@ def main():
         repeat_openers.extend(openers)
 
     repeat_openers.sort(key=lambda x: x["opens"], reverse=True)
+
+    build_email_summary(daily_data, CAMPAIGNS, today_iso, today)
 
     total_sent = sum(v["sent"] for v in lifetime_totals.values())
     total_opens = sum(v["opens"] for v in lifetime_totals.values())
