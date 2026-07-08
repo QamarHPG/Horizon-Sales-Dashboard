@@ -226,6 +226,7 @@
         <option value="hhNew">Home Health Care (New Leads)</option>
         <option value="dental2">Dental Campaign 2</option>
         <option value="hh1to5">Home Health Care (1M - 5M)</option>
+        <option value="medspa">Med SPA Campaign</option>
       </select>
     </div>
   </div>
@@ -285,6 +286,7 @@
         <th class="num">Home Health (New Leads)</th>
         <th class="num">Dental Campaign 2</th>
         <th class="num">Home Health (1M-5M)</th>
+        <th class="num">Med SPA Campaign</th>
       </tr>
     </thead>
     <tbody id="stepTableBody"></tbody>
@@ -605,7 +607,7 @@
     let rows = '';
     for (let i = 0; i < 5; i++){
       rows += `<tr><td>Email ${i+1}</td>`;
-      ['dental1','hhNew','dental2','hh1to5'].forEach(k => {
+      ['dental1','hhNew','dental2','hh1to5','medspa'].forEach(k => {
         const v = stepSends[k].sends[i];
         rows += `<td class="num">${v === null ? '—' : v}</td>`;
       });

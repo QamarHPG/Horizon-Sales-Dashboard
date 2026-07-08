@@ -26,6 +26,7 @@ CAMPAIGNS = {
     "hhNew":   {"id": "8b497725-593b-4df8-850c-c9865d048d31", "name": "Home Health Care (New Leads)"},
     "dental2": {"id": "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", "name": "Dental Campaign 2"},
     "hh1to5":  {"id": "07bee31e-9703-4058-9a61-507e2f4840a7", "name": "Home Health Care (1M - 5M)"},
+    "medspa":  {"id": "a5aea1c0-454f-47d8-a019-5af2635e9f07", "name": "Med SPA Campaign"},
 }
 
 def get(path, params=None):
@@ -237,7 +238,7 @@ def main():
     daily_data = {}
     step_sends = {}
     repeat_openers = []
-    max_steps_map = {"dental1": 4, "hhNew": 5, "dental2": 4, "hh1to5": 4}
+    max_steps_map = {"dental1": 4, "hhNew": 5, "dental2": 4, "hh1to5": 4, "medspa": 4}
 
     for key, camp in CAMPAIGNS.items():
         cid = camp["id"]
