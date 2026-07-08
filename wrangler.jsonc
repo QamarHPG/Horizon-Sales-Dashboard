@@ -3,6 +3,9 @@
   "name": "horizon-sales-dashboard",
   "compatibility_date": "2026-07-07",
   "main": "worker-auth.js",
+  "vars": {
+    "BASIC_AUTH_USER": "HPG Sales Dashboard"
+  },
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
