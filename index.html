@@ -353,7 +353,8 @@
     dental1: { name: "Dental Campaign", sent: 320, contacted: 267, opens: 47, clicks: 0, replies: 0, bounces: 4 },
     hhNew: { name: "Home Health Care (New Leads)", sent: 225, contacted: 82, opens: 38, clicks: 0, replies: 0, bounces: 10 },
     dental2: { name: "Dental Campaign 2", sent: 195, contacted: 136, opens: 22, clicks: 0, replies: 0, bounces: 8 },
-    hh1to5: { name: "Home Health Care (1M - 5M)", sent: 249, contacted: 187, opens: 23, clicks: 0, replies: 0, bounces: 4 }
+    hh1to5: { name: "Home Health Care (1M - 5M)", sent: 249, contacted: 187, opens: 23, clicks: 0, replies: 0, bounces: 4 },
+    medspa: { name: "Med SPA Campaign", sent: 5, contacted: 5, opens: 0, clicks: 0, replies: 0, bounces: 0 }
   };
 
   // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
@@ -369,6 +370,9 @@
     ],
     hh1to5: [
       {date:"2026-06-23",sent:10,opens:1,clicks:0,replies:0},{date:"2026-06-24",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-25",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:17,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:16,opens:1,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-29",sent:16,opens:3,clicks:0,replies:0},{date:"2026-06-30",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:16,opens:3,clicks:0,replies:0},{date:"2026-07-02",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-03",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-04",sent:16,opens:0,clicks:0,replies:0},{date:"2026-07-05",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-06",sent:16,opens:5,clicks:0,replies:0},{date:"2026-07-07",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:0,clicks:0,replies:0}
+    ],
+    medspa: [
+      {date:"2026-07-08",sent:5,opens:0,clicks:0,replies:0}
     ]
   };
 
@@ -599,7 +603,8 @@
     dental1: { maxSteps: 4, sends: [93, 85, 79, 63, null] },
     hhNew: { maxSteps: 5, sends: [59, 49, 47, 45, 25] },
     dental2: { maxSteps: 4, sends: [67, 59, 54, 15, null] },
-    hh1to5: { maxSteps: 4, sends: [68, 63, 62, 56, null] }
+    hh1to5: { maxSteps: 4, sends: [68, 63, 62, 56, null] },
+    medspa: { maxSteps: 4, sends: [5, 0, 0, 0, null] }
   };
 
   function renderStepTable(){
