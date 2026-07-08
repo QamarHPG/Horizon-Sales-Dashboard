@@ -21,13 +21,10 @@ if not API_KEY:
 BASE = "https://api.instantly.ai/api/v2"
 HEADERS = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
 
-CAMPAIGNS = {
-    "dental1": {"id": "a4a98af6-b3af-4332-9e14-d59c0a30e860", "name": "Dental Campaign"},
-    "hhNew":   {"id": "8b497725-593b-4df8-850c-c9865d048d31", "name": "Home Health Care (New Leads)"},
-    "dental2": {"id": "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", "name": "Dental Campaign 2"},
-    "hh1to5":  {"id": "07bee31e-9703-4058-9a61-507e2f4840a7", "name": "Home Health Care (1M - 5M)"},
-    "medspa":  {"id": "a5aea1c0-454f-47d8-a019-5af2635e9f07", "name": "Med SPA Campaign"},
-}
+# Campaigns are no longer hardcoded here — they're auto-discovered from the
+# Instantly API on every run (see fetch_all_campaigns/classify_status below),
+# so a new campaign just needs to exist in Instantly; pressing refresh picks
+# it up with no code changes.
 
 def get(path, params=None):
     url = f"{BASE}{path}"
@@ -45,15 +42,42 @@ def post(path, body=None):
     r.raise_for_status()
     return r.json()
 
-def fetch_overview(campaign_id):
-    return get("/campaigns/analytics/overview", {"id": campaign_id})
-
 def extract_list(data):
     if isinstance(data, list):
         return data
     if isinstance(data, dict):
         return data.get("result") or data.get("data") or data.get("items") or []
     return []
+
+# Instantly campaign status codes: 0=draft, 1=active, 2=paused, 3=completed.
+# Anything else (e.g. -1, seen on an AI SDR campaign type) is non-standard
+# and excluded. Drafts are excluded too — they've never sent anything.
+def classify_status(status):
+    return {1: "active", 2: "paused", 3: "completed"}.get(status)
+
+def sequence_step_count(campaign):
+    seqs = campaign.get("sequences") or []
+    if seqs:
+        return len(seqs[0].get("steps") or [])
+    return 0
+
+def fetch_all_campaigns():
+    results = []
+    cursor = None
+    while True:
+        params = {"limit": 100}
+        if cursor:
+            params["starting_after"] = cursor
+        data = get("/campaigns", params)
+        items = data.get("items", [])
+        results.extend(items)
+        cursor = data.get("next_starting_after")
+        if not cursor or not items:
+            break
+    return results
+
+def fetch_overview(campaign_id):
+    return get("/campaigns/analytics/overview", {"id": campaign_id})
 
 def fetch_daily(campaign_id, days=30):
     end = datetime.now(timezone.utc).date()
@@ -142,7 +166,7 @@ def build_daily_rows(rows, today_iso):
                 today_row[k] += r[k]
     return out
 
-def build_step_sends(steps, max_steps):
+def build_step_sends(steps, max_steps, total_rows):
     by_step = {}
     for s in steps:
         idx = s.get("step")
@@ -150,7 +174,7 @@ def build_step_sends(steps, max_steps):
             continue
         by_step[int(idx)] = s.get("sent", 0)
     sends = []
-    for i in range(5):
+    for i in range(total_rows):
         if i >= max_steps:
             sends.append(None)
         else:
@@ -232,38 +256,76 @@ def main():
     today = datetime.now(ET).strftime("%B %-d, %Y")
     today_iso = datetime.now(ET).strftime("%Y-%m-%d")
 
-    print("Fetching Instantly data...")
+    print("Discovering campaigns from Instantly...")
+    raw_campaigns = fetch_all_campaigns()
+
+    active_campaigns = {}    # id -> {"name":..., "maxSteps": int}
+    tracked_campaigns = {}   # id -> {"name":..., "status": "active"|"paused"|"completed"} (all non-draft)
+
+    for c in raw_campaigns:
+        status_label = classify_status(c.get("status"))
+        if status_label is None:
+            continue  # skip drafts and any non-standard status
+        cid = c["id"]
+        cname = c.get("name", "Untitled Campaign")
+        tracked_campaigns[cid] = {"name": cname, "status": status_label}
+        if status_label == "active":
+            active_campaigns[cid] = {"name": cname, "maxSteps": sequence_step_count(c) or 1}
+
+    # All active campaigns' step tables share one row count so no campaign's
+    # later steps get truncated by another campaign's shorter sequence.
+    overall_max_steps = max((v["maxSteps"] for v in active_campaigns.values()), default=1)
+
+    print(f"  {len(active_campaigns)} active, "
+          f"{len(tracked_campaigns) - len(active_campaigns)} paused/completed tracked for lifetime totals.")
 
     lifetime_totals = {}
     daily_data = {}
     step_sends = {}
     repeat_openers = []
-    max_steps_map = {"dental1": 4, "hhNew": 5, "dental2": 4, "hh1to5": 4, "medspa": 4}
+    all_campaigns_lifetime = {}
 
-    for key, camp in CAMPAIGNS.items():
-        cid = camp["id"]
-        cname = camp["name"]
-        print(f"  {cname}...")
+    for cid, info in tracked_campaigns.items():
+        cname = info["name"]
+        print(f"  {cname} ({info['status']})...")
 
         overview = fetch_overview(cid)
-        lifetime_totals[key] = build_lifetime(overview, cname)
+        lt = build_lifetime(overview, cname)
 
-        rows = fetch_daily(cid, days=30)
-        daily_data[key] = build_daily_rows(rows, today_iso)
-
-        steps = fetch_steps(cid)
-        step_sends[key] = {
-            "maxSteps": max_steps_map[key],
-            "sends": build_step_sends(steps, max_steps_map[key]),
+        all_campaigns_lifetime[cid] = {
+            "name": cname,
+            "status": info["status"],
+            "sent": lt["sent"],
+            "opens": lt["opens"],
+            "replies": lt["replies"],
+            "bounces": lt["bounces"],
         }
 
-        openers = fetch_repeat_openers(key, cid, cname)
+        if cid not in active_campaigns:
+            continue  # paused/completed: lifetime totals only, no daily/step/opener detail
+
+        lifetime_totals[cid] = lt
+
+        rows = fetch_daily(cid, days=30)
+        daily_data[cid] = build_daily_rows(rows, today_iso)
+
+        max_steps = active_campaigns[cid]["maxSteps"]
+        steps = fetch_steps(cid)
+        step_sends[cid] = {
+            "name": cname,
+            "maxSteps": max_steps,
+            "sends": build_step_sends(steps, max_steps, overall_max_steps),
+        }
+
+        openers = fetch_repeat_openers(cid, cid, cname)
         repeat_openers.extend(openers)
 
     repeat_openers.sort(key=lambda x: x["opens"], reverse=True)
 
-    build_email_summary(daily_data, CAMPAIGNS, today_iso, today)
+    build_email_summary(daily_data, active_campaigns, today_iso, today)
 
+    # "Your rate" stats below stay scoped to active campaigns (matches what
+    # the benchmark section already claims to measure).
     total_sent = sum(v["sent"] for v in lifetime_totals.values())
     total_opens = sum(v["opens"] for v in lifetime_totals.values())
     total_bounces = sum(v["bounces"] for v in lifetime_totals.values())
@@ -271,7 +333,7 @@ def main():
     bounce_rate_pct = pct(total_bounces, total_sent)
 
     lt_js = "{\n" + ",\n".join(
-        f'    {k}: {{ name: {json.dumps(v["name"])}, sent: {v["sent"]}, contacted: {v["contacted"]}, '
+        f'    {json.dumps(k)}: {{ name: {json.dumps(v["name"])}, sent: {v["sent"]}, contacted: {v["contacted"]}, '
         f'opens: {v["opens"]}, clicks: {v["clicks"]}, replies: {v["replies"]}, bounces: {v["bounces"]} }}'
         for k, v in lifetime_totals.items()
     ) + "\n  }"
@@ -281,7 +343,7 @@ def main():
                 f'opens:{r["opens"]},clicks:{r["clicks"]},replies:{r["replies"]}}}')
 
     dd_js = "{\n" + ",\n".join(
-        f'    {k}: [\n      ' + ",".join(daily_row_js(r) for r in rows) + '\n    ]'
+        f'    {json.dumps(k)}: [\n      ' + ",".join(daily_row_js(r) for r in rows) + '\n    ]'
         for k, rows in daily_data.items()
     ) + "\n  }"
 
@@ -296,14 +358,20 @@ def main():
 
     def step_js(key, v):
         sends_str = ", ".join("null" if x is None else str(x) for x in v["sends"])
-        return f'{key}: {{ maxSteps: {v["maxSteps"]}, sends: [{sends_str}] }}'
+        return f'{json.dumps(key)}: {{ name: {json.dumps(v["name"])}, maxSteps: {v["maxSteps"]}, sends: [{sends_str}] }}'
 
     ss_js = "{\n    " + ",\n    ".join(step_js(k, v) for k, v in step_sends.items()) + "\n  }"
+
+    def acl_js_entry(cid, v):
+        return (f'{json.dumps(cid)}: {{ name: {json.dumps(v["name"])}, status: {json.dumps(v["status"])}, '
+                f'sent: {v["sent"]}, opens: {v["opens"]}, replies: {v["replies"]}, bounces: {v["bounces"]} }}')
+
+    acl_js = "{\n    " + ",\n    ".join(acl_js_entry(cid, v) for cid, v in all_campaigns_lifetime.items()) + "\n  }"
 
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
-    def replace_block(html, var_name, new_value, end_marker="};"):
+    def replace_block(html, var_name, new_value):
         pattern = rf'(const {re.escape(var_name)}\s*=\s*)(\{{[\s\S]*?\n  \}};)'
         replacement = rf'\g<1>{new_value};'
         result = re.sub(pattern, replacement, html)
@@ -323,6 +391,7 @@ def main():
     html = replace_block(html, "dailyData", dd_js)
     html = replace_array_block(html, "repeatOpeners", ro_js)
     html = replace_block(html, "stepSends", ss_js)
+    html = replace_block(html, "allCampaignsLifetime", acl_js)
 
     html = re.sub(
         r'Pulled \w+ \d+, \d{4}',
@@ -349,12 +418,20 @@ def main():
         html
     )
 
+    html = re.sub(
+        r'(<span id="activeCampaignCount">)\d+(</span>)',
+        rf'\g<1>{len(active_campaigns)}\g<2>',
+        html
+    )
+
     html = re.sub(r'v\d+ —', f'v{today_iso} —', html)
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
 
-    print(f"Done. {len(repeat_openers)} repeat openers, open rate {open_rate_pct}%, bounce rate {bounce_rate_pct}%")
+    print(f"Done. {len(active_campaigns)} active campaigns, {len(all_campaigns_lifetime)} total tracked "
+          f"(incl. paused/completed). {len(repeat_openers)} repeat openers, "
+          f"open rate {open_rate_pct}%, bounce rate {bounce_rate_pct}%")
 
 
 if __name__ == "__main__":

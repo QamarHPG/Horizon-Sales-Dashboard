@@ -187,7 +187,7 @@
       <img class="logo" src="horizon-path-logo.png" alt="Horizon Path Group logo">
       <div>
         <h1>Horizon Path Group — Instantly campaign dashboard</h1>
-        <div class="sub">Active campaigns only · Times in Eastern (ET)</div>
+        <div class="sub">Active campaigns (live detail) + all-time totals below · Times in Eastern (ET)</div>
       </div>
     </div>
     <div class="meta">
@@ -222,11 +222,6 @@
       <label for="campaignFilter">Campaign</label>
       <select id="campaignFilter" onchange="renderKPIs(); renderRepeatOpeners();">
         <option value="all" selected>All active campaigns</option>
-        <option value="dental1">Dental Campaign</option>
-        <option value="hhNew">Home Health Care (New Leads)</option>
-        <option value="dental2">Dental Campaign 2</option>
-        <option value="hh1to5">Home Health Care (1M - 5M)</option>
-        <option value="medspa">Med SPA Campaign</option>
       </select>
     </div>
   </div>
@@ -234,7 +229,7 @@
   <div class="section-label">KPIs for selected range and campaign</div>
   <div class="kpi-grid" id="kpiGrid"></div>
 
-  <div class="section-label">Per-campaign comparison (lifetime totals)</div>
+  <div class="section-label">Per-campaign comparison — active campaigns (lifetime totals)</div>
   <div class="table-note">Bounces aren't broken out by day in Instantly's API, so bounce rate only appears here at the lifetime level.</div>
   <table>
     <thead>
@@ -251,6 +246,31 @@
       </tr>
     </thead>
     <tbody id="campaignTableBody"></tbody>
+  </table>
+
+  <div class="section-label">Lifetime totals — every campaign ever run</div>
+  <div class="table-note">Includes active, paused, and completed campaigns, so historical send volume isn't lost when a campaign is paused or wraps up. Draft campaigns (never launched) are excluded. Auto-discovered from Instantly on every refresh — new campaigns appear here with no code changes.</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Campaign</th>
+        <th>Status</th>
+        <th class="num">Sent</th>
+        <th class="num">Opens</th>
+        <th class="num">Replies</th>
+        <th class="num">Bounces</th>
+      </tr>
+    </thead>
+    <tbody id="allCampaignsTableBody"></tbody>
+    <tfoot>
+      <tr style="font-weight:700;">
+        <td colspan="2">Total (all campaigns, all-time)</td>
+        <td class="num" id="allCampaignsTotalSent">0</td>
+        <td class="num" id="allCampaignsTotalOpens">0</td>
+        <td class="num" id="allCampaignsTotalReplies">0</td>
+        <td class="num" id="allCampaignsTotalBounces">0</td>
+      </tr>
+    </tfoot>
   </table>
 
   <div class="section-label">Re-engagement signal (multi-open leads)</div>
@@ -280,20 +300,13 @@
   <div class="table-note">How many emails have gone out at each step of the sequence — a rough read on how many times each lead has been touched. "—" means that campaign's sequence doesn't have that many steps.</div>
   <table>
     <thead>
-      <tr>
-        <th>Step</th>
-        <th class="num">Dental Campaign</th>
-        <th class="num">Home Health (New Leads)</th>
-        <th class="num">Dental Campaign 2</th>
-        <th class="num">Home Health (1M-5M)</th>
-        <th class="num">Med SPA Campaign</th>
-      </tr>
+      <tr id="stepTableHeaderRow"><th>Step</th></tr>
     </thead>
     <tbody id="stepTableBody"></tbody>
   </table>
 
   <div class="section-label">How your numbers compare to 2026 industry benchmarks</div>
-  <div class="table-note">Your lifetime blended rate across all 4 active campaigns vs. published 2026 cold email benchmarks. Sources below the table.</div>
+  <div class="table-note">Your lifetime blended rate across all <span id="activeCampaignCount">0</span> active campaigns vs. published 2026 cold email benchmarks. Sources below the table.</div>
   <table>
     <thead>
       <tr>
@@ -342,7 +355,7 @@
   </div>
 
   <footer>
-    v2026-07-01 — data refreshed live from Instantly API · contacted counts updated · repeat-openers timestamps synced · all 4 active campaigns current as of June 30 2026.
+    v2026-07-01 — data refreshed live from Instantly API on every refresh · campaign list auto-updates as campaigns are added, paused, or completed.
   </footer>
 
 </div>
@@ -355,6 +368,11 @@
     dental2: { name: "Dental Campaign 2", sent: 195, contacted: 136, opens: 22, clicks: 0, replies: 0, bounces: 8 },
     hh1to5: { name: "Home Health Care (1M - 5M)", sent: 249, contacted: 187, opens: 23, clicks: 0, replies: 0, bounces: 4 },
     medspa: { name: "Med SPA Campaign", sent: 5, contacted: 5, opens: 0, clicks: 0, replies: 0, bounces: 0 }
+  };
+
+  // Lifetime totals across every non-draft campaign (active, paused, completed) —
+  // auto-discovered from Instantly and rebuilt on every refresh.
+  const allCampaignsLifetime = {
   };
 
   // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
@@ -608,23 +626,78 @@
   };
 
   function renderStepTable(){
+    const keys = Object.keys(stepSends);
+    const headerRow = document.getElementById('stepTableHeaderRow');
+    headerRow.innerHTML = '<th>Step</th>' + keys.map(k =>
+      `<th class="num">${(stepSends[k].name || (lifetimeTotals[k] || {}).name || k)}</th>`
+    ).join('');
+
+    const maxLen = Math.max(1, ...keys.map(k => stepSends[k].sends.length));
     const tbody = document.getElementById('stepTableBody');
     let rows = '';
-    for (let i = 0; i < 5; i++){
+    for (let i = 0; i < maxLen; i++){
       rows += `<tr><td>Email ${i+1}</td>`;
-      ['dental1','hhNew','dental2','hh1to5','medspa'].forEach(k => {
+      keys.forEach(k => {
         const v = stepSends[k].sends[i];
-        rows += `<td class="num">${v === null ? '—' : v}</td>`;
+        rows += `<td class="num">${(v === null || v === undefined) ? '—' : v}</td>`;
       });
       rows += '</tr>';
     }
-    tbody.innerHTML = rows;
+    tbody.innerHTML = keys.length ? rows : `<tr><td class="table-note" style="margin:0;">No active campaigns found.</td></tr>`;
   }
 
+  // Campaign filter dropdown is built from whatever active campaigns exist
+  // in lifetimeTotals — a new campaign just needs a refresh, no code change.
+  function populateCampaignFilter(){
+    const sel = document.getElementById('campaignFilter');
+    const keys = Object.keys(lifetimeTotals).sort((a, b) =>
+      lifetimeTotals[a].name.localeCompare(lifetimeTotals[b].name)
+    );
+    keys.forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = lifetimeTotals[k].name;
+      sel.appendChild(opt);
+    });
+  }
+
+  function renderAllCampaignsTable(){
+    const rows = Object.values(allCampaignsLifetime);
+    const statusBadge = s => {
+      if (s === 'active') return '<span class="badge good">Active</span>';
+      if (s === 'paused') return '<span class="badge bad">Paused</span>';
+      return '<span class="badge" style="background:#EDEBE4;color:var(--text-muted);">Completed</span>';
+    };
+    const tbody = document.getElementById('allCampaignsTableBody');
+    tbody.innerHTML = rows.length
+      ? rows.map(c => `<tr>
+          <td>${c.name}</td>
+          <td>${statusBadge(c.status)}</td>
+          <td class="num">${c.sent}</td>
+          <td class="num">${c.opens}</td>
+          <td class="num">${c.replies}</td>
+          <td class="num">${c.bounces}</td>
+        </tr>`).join('')
+      : `<tr><td colspan="6" class="table-note" style="margin:0;">No campaigns found yet — press refresh.</td></tr>`;
+
+    const totals = rows.reduce((a, c) => ({
+      sent: a.sent + c.sent, opens: a.opens + c.opens, replies: a.replies + c.replies, bounces: a.bounces + c.bounces
+    }), { sent: 0, opens: 0, replies: 0, bounces: 0 });
+    document.getElementById('allCampaignsTotalSent').textContent = totals.sent.toLocaleString();
+    document.getElementById('allCampaignsTotalOpens').textContent = totals.opens.toLocaleString();
+    document.getElementById('allCampaignsTotalReplies').textContent = totals.replies.toLocaleString();
+    document.getElementById('allCampaignsTotalBounces').textContent = totals.bounces.toLocaleString();
+  }
+
+  const activeCampaignCountEl = document.getElementById('activeCampaignCount');
+  if (activeCampaignCountEl) activeCampaignCountEl.textContent = Object.keys(lifetimeTotals).length;
+
+  populateCampaignFilter();
   renderKPIs();
   renderCampaignTable();
   renderRepeatOpeners();
   renderStepTable();
+  renderAllCampaignsTable();
 
   // --- Refresh button ---
   // Set to the Cloudflare Worker URL to enable the button (see cloudflare-worker/README.md).
