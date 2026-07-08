@@ -26,6 +26,7 @@ jobs:
           INSTANTLY_API_KEY: ${{ secrets.INSTANTLY_API_KEY }}
 
       - name: Send daily email summary
+        if: github.event_name == 'schedule'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
