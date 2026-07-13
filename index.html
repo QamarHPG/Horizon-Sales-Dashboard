@@ -320,7 +320,7 @@
     <tbody>
       <tr>
         <td>Open rate</td>
-        <td class="num">11.9%</td>
+        <td class="num">11.7%</td>
         <td class="num">27.7% – 44%</td>
         <td class="num">40% – 60%</td>
         <td class="num">65%+</td>
@@ -363,46 +363,46 @@
 <script>
   // Lifetime totals per campaign — live from Instantly analytics_campaign_overview, June 30 2026
   const lifetimeTotals = {
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 34, contacted: 29, opens: 1, clicks: 0, replies: 0, bounces: 2 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 48, contacted: 29, opens: 3, clicks: 0, replies: 0, bounces: 2 },
     "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", sent: 358, contacted: 310, opens: 50, clicks: 0, replies: 0, bounces: 4 },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", sent: 6, contacted: 6, opens: 0, clicks: 0, replies: 0, bounces: 1 },
-    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", sent: 306, contacted: 245, opens: 48, clicks: 0, replies: 0, bounces: 10 },
-    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", sent: 255, contacted: 225, opens: 27, clicks: 0, replies: 0, bounces: 10 },
-    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", sent: 326, contacted: 277, opens: 27, clicks: 0, replies: 0, bounces: 6 }
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", sent: 17, contacted: 17, opens: 1, clicks: 0, replies: 0, bounces: 1 },
+    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", sent: 322, contacted: 245, opens: 49, clicks: 0, replies: 0, bounces: 11 },
+    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", sent: 270, contacted: 236, opens: 28, clicks: 0, replies: 0, bounces: 11 },
+    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", sent: 339, contacted: 277, opens: 28, clicks: 0, replies: 0, bounces: 6 }
   };
 
   // Lifetime totals across every non-draft campaign (active, paused, completed) —
   // auto-discovered from Instantly and rebuilt on every refresh.
   const allCampaignsLifetime = {
     "b679c367-3b91-4411-b351-af7a4185310b": { name: "Home Health Care 1", status: "paused", sent: 194, opens: 39, replies: 1, bounces: 3 },
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "active", sent: 34, opens: 1, replies: 0, bounces: 2 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "active", sent: 48, opens: 3, replies: 0, bounces: 2 },
     "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", status: "active", sent: 358, opens: 50, replies: 0, bounces: 4 },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", status: "active", sent: 6, opens: 0, replies: 0, bounces: 1 },
-    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", status: "active", sent: 306, opens: 48, replies: 0, bounces: 10 },
-    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", status: "active", sent: 255, opens: 27, replies: 0, bounces: 10 },
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", status: "active", sent: 17, opens: 1, replies: 0, bounces: 1 },
+    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", status: "active", sent: 322, opens: 49, replies: 0, bounces: 11 },
+    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", status: "active", sent: 270, opens: 28, replies: 0, bounces: 11 },
     "2566e143-6adb-468f-a604-1d1475b5e32b": { name: "Dental, Med SPA, Janitorial", status: "paused", sent: 188, opens: 30, replies: 0, bounces: 3 },
-    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", status: "active", sent: 326, opens: 27, replies: 0, bounces: 6 }
+    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", status: "active", sent: 339, opens: 28, replies: 0, bounces: 6 }
   };
 
   // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
   const dailyData = {
     "a5aea1c0-454f-47d8-a019-5af2635e9f07": [
-      {date:"2026-07-08",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-09",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:1,clicks:0,replies:0}
+      {date:"2026-07-08",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-09",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-13",sent:14,opens:2,clicks:0,replies:0}
     ],
     "a4a98af6-b3af-4332-9e14-d59c0a30e860": [
       {date:"2026-06-18",sent:9,opens:0,clicks:0,replies:0},{date:"2026-06-19",sent:20,opens:1,clicks:0,replies:0},{date:"2026-06-20",sent:20,opens:2,clicks:0,replies:0},{date:"2026-06-21",sent:20,opens:5,clicks:0,replies:0},{date:"2026-06-22",sent:20,opens:4,clicks:0,replies:0},{date:"2026-06-23",sent:20,opens:7,clicks:0,replies:0},{date:"2026-06-24",sent:14,opens:5,clicks:0,replies:0},{date:"2026-06-25",sent:14,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:13,opens:2,clicks:0,replies:0},{date:"2026-06-27",sent:14,opens:0,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-29",sent:14,opens:2,clicks:0,replies:0},{date:"2026-06-30",sent:14,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:14,opens:1,clicks:0,replies:0},{date:"2026-07-02",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-03",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-04",sent:14,opens:2,clicks:0,replies:0},{date:"2026-07-05",sent:14,opens:2,clicks:0,replies:0},{date:"2026-07-06",sent:14,opens:6,clicks:0,replies:0},{date:"2026-07-07",sent:14,opens:3,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-09",sent:14,opens:1,clicks:0,replies:0},{date:"2026-07-10",sent:13,opens:1,clicks:0,replies:0},{date:"2026-07-12",sent:11,opens:0,clicks:0,replies:0},{date:"2026-07-13",sent:0,opens:1,clicks:0,replies:0}
     ],
     "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": [
-      {date:"2026-07-13",sent:6,opens:0,clicks:0,replies:0}
+      {date:"2026-07-13",sent:17,opens:1,clicks:0,replies:0}
     ],
     "8b497725-593b-4df8-850c-c9865d048d31": [
-      {date:"2026-06-30",sent:25,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:25,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:25,opens:3,clicks:0,replies:0},{date:"2026-07-03",sent:25,opens:5,clicks:0,replies:0},{date:"2026-07-04",sent:25,opens:3,clicks:0,replies:0},{date:"2026-07-05",sent:25,opens:8,clicks:0,replies:0},{date:"2026-07-06",sent:25,opens:2,clicks:0,replies:0},{date:"2026-07-07",sent:25,opens:8,clicks:0,replies:0},{date:"2026-07-08",sent:25,opens:4,clicks:0,replies:0},{date:"2026-07-09",sent:16,opens:4,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-11",sent:25,opens:2,clicks:0,replies:0},{date:"2026-07-12",sent:25,opens:2,clicks:0,replies:0}
+      {date:"2026-06-30",sent:25,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:25,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:25,opens:3,clicks:0,replies:0},{date:"2026-07-03",sent:25,opens:5,clicks:0,replies:0},{date:"2026-07-04",sent:25,opens:3,clicks:0,replies:0},{date:"2026-07-05",sent:25,opens:8,clicks:0,replies:0},{date:"2026-07-06",sent:25,opens:2,clicks:0,replies:0},{date:"2026-07-07",sent:25,opens:8,clicks:0,replies:0},{date:"2026-07-08",sent:25,opens:4,clicks:0,replies:0},{date:"2026-07-09",sent:16,opens:4,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-11",sent:25,opens:2,clicks:0,replies:0},{date:"2026-07-12",sent:25,opens:2,clicks:0,replies:0},{date:"2026-07-13",sent:16,opens:1,clicks:0,replies:0}
     ],
     "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": [
-      {date:"2026-06-26",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:3,clicks:0,replies:0},{date:"2026-06-29",sent:15,opens:4,clicks:0,replies:0},{date:"2026-06-30",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-01",sent:15,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-03",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-04",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-05",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-06",sent:15,opens:4,clicks:0,replies:0},{date:"2026-07-07",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-09",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-11",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-12",sent:15,opens:1,clicks:0,replies:0}
+      {date:"2026-06-26",sent:15,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:3,clicks:0,replies:0},{date:"2026-06-29",sent:15,opens:4,clicks:0,replies:0},{date:"2026-06-30",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-01",sent:15,opens:4,clicks:0,replies:0},{date:"2026-07-02",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-03",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-04",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-05",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-06",sent:15,opens:4,clicks:0,replies:0},{date:"2026-07-07",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-09",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-11",sent:15,opens:2,clicks:0,replies:0},{date:"2026-07-12",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-13",sent:15,opens:1,clicks:0,replies:0}
     ],
     "07bee31e-9703-4058-9a61-507e2f4840a7": [
-      {date:"2026-06-23",sent:10,opens:1,clicks:0,replies:0},{date:"2026-06-24",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-25",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:17,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:16,opens:1,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-29",sent:16,opens:3,clicks:0,replies:0},{date:"2026-06-30",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:16,opens:3,clicks:0,replies:0},{date:"2026-07-02",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-03",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-04",sent:16,opens:0,clicks:0,replies:0},{date:"2026-07-05",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-06",sent:16,opens:5,clicks:0,replies:0},{date:"2026-07-07",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-09",sent:16,opens:3,clicks:0,replies:0},{date:"2026-07-10",sent:17,opens:0,clicks:0,replies:0},{date:"2026-07-11",sent:25,opens:1,clicks:0,replies:0},{date:"2026-07-12",sent:19,opens:0,clicks:0,replies:0}
+      {date:"2026-06-23",sent:10,opens:1,clicks:0,replies:0},{date:"2026-06-24",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-25",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:17,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:16,opens:1,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-29",sent:16,opens:3,clicks:0,replies:0},{date:"2026-06-30",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:16,opens:3,clicks:0,replies:0},{date:"2026-07-02",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-03",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-04",sent:16,opens:0,clicks:0,replies:0},{date:"2026-07-05",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-06",sent:16,opens:5,clicks:0,replies:0},{date:"2026-07-07",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-09",sent:16,opens:3,clicks:0,replies:0},{date:"2026-07-10",sent:17,opens:0,clicks:0,replies:0},{date:"2026-07-11",sent:25,opens:1,clicks:0,replies:0},{date:"2026-07-12",sent:19,opens:0,clicks:0,replies:0},{date:"2026-07-13",sent:13,opens:1,clicks:0,replies:0}
     ]
   };
 
@@ -440,11 +440,12 @@
     { name: "Melanie Hall", email: "mhall@hospiceofhuntington.org", company: "Hospice of Huntington", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 2, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T13:58:41.143Z" },
     { name: "John Bloodsworth", email: "jay@blhc.org", company: "A Better Living Home Care Agency", campaignKey: "8b497725-593b-4df8-850c-c9865d048d31", campaign: "Home Health Care (New Leads)", opens: 2, emailsSent: 5, replies: 0, lastOpen: "2026-07-07T15:28:55.303Z" },
     { name: "Chris McDermott", email: "chris@grinderhaizlip.com", company: "Grinder Haizlip Construction General Contractors", campaignKey: "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", campaign: "Dental Campaign 2", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-09T13:37:41.809Z" },
-    { name: "Mitch Tobol", email: "mtobol@cgtmarketing.com", company: "CGT Marketing", campaignKey: "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", campaign: "Dental Campaign 2", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-09T15:17:29.053Z" },
+    { name: "Mitch Tobol", email: "mtobol@cgtmarketing.com", company: "CGT Marketing", campaignKey: "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", campaign: "Dental Campaign 2", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-13T13:13:37.627Z" },
     { name: "Ryan Roberts", email: "docroberts@onthecuspdds.com", company: "On the Cusp Pediatric Dentistry", campaignKey: "5f24f6fe-9d4c-4562-b979-1f5ad9f88667", campaign: "Dental Campaign 2", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-10T15:46:31.888Z" },
     { name: "David Kennedy", email: "david@kennedycare.com", company: "Kennedy Care", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-01T13:01:53.142Z" },
     { name: "Corey Centen", email: "corey@bodyport.com", company: "Bodyport", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-02T14:45:19.418Z" },
     { name: "Alyssa Moore", email: "alyssa@spren.com", company: "Spren", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-07T15:24:32.695Z" },
+    { name: "Afik Gal", email: "afik@assuredallies.com", company: "Assured Allies", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-13T14:12:21.487Z" },
     { name: "Steph Einfeld", email: "seinfeld@northwestcoloradohealth.org", company: "Northwest Colorado Health", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 2, replies: 0, lastOpen: "2026-07-11T15:11:18.541Z" }
   ];
 
@@ -634,12 +635,12 @@
   // Step-level send volume — live from Instantly analytics_campaign_steps, June 30 2026
   // null = sequence doesn't have this many steps; 0 = has the step but no leads reached it yet
   const stepSends = {
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", maxSteps: 4, sends: [29, 5, 0, 0, null] },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", maxSteps: 4, sends: [29, 14, 5, 0, null] },
     "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", maxSteps: 4, sends: [94, 90, 89, 85, null] },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", maxSteps: 4, sends: [6, 0, 0, 0, null] },
-    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", maxSteps: 5, sends: [105, 57, 49, 48, 47] },
-    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", maxSteps: 4, sends: [82, 60, 59, 54, null] },
-    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", maxSteps: 4, sends: [111, 88, 64, 63, null] }
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", maxSteps: 4, sends: [17, 0, 0, 0, null] },
+    "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", maxSteps: 5, sends: [105, 72, 49, 48, 48] },
+    "5f24f6fe-9d4c-4562-b979-1f5ad9f88667": { name: "Dental Campaign 2", maxSteps: 4, sends: [93, 60, 60, 57, null] },
+    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", maxSteps: 4, sends: [111, 88, 76, 64, null] }
   };
 
   function renderStepTable(){
