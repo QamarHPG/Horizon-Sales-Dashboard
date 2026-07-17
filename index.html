@@ -192,7 +192,7 @@
     </div>
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
-      <div>Pulled July 16, 2026 · v8</div>
+      <div>Pulled July 17, 2026 · v8</div>
       <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden>↻ Refresh now</button>
       <div class="refresh-status" id="refreshStatus"></div>
     </div>
@@ -363,11 +363,11 @@
 <script>
   // Lifetime totals per campaign — live from Instantly analytics_campaign_overview, June 30 2026
   const lifetimeTotals = {
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 67, contacted: 36, opens: 3, clicks: 0, replies: 0, bounces: 6 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 67, contacted: 48, opens: 3, clicks: 0, replies: 0, bounces: 6 },
     "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", sent: 363, contacted: 347, opens: 51, clicks: 0, replies: 0, bounces: 4 },
     "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", sent: 40, contacted: 40, opens: 2, clicks: 0, replies: 0, bounces: 8 },
     "8b497725-593b-4df8-850c-c9865d048d31": { name: "Home Health Care (New Leads)", sent: 342, contacted: 295, opens: 53, clicks: 0, replies: 0, bounces: 16 },
-    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", sent: 352, contacted: 300, opens: 29, clicks: 0, replies: 0, bounces: 9 }
+    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", sent: 352, contacted: 316, opens: 29, clicks: 0, replies: 0, bounces: 9 }
   };
 
   // Lifetime totals across every non-draft campaign (active, paused, completed) —
@@ -439,7 +439,7 @@
     { name: "Steph Einfeld", email: "seinfeld@northwestcoloradohealth.org", company: "Northwest Colorado Health", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-14T13:18:54.051Z" }
   ];
 
-  const TODAY = new Date("2026-07-16T23:59:59Z");
+  const TODAY = new Date("2026-07-17T23:59:59Z");
 
   function onRangeChange(){
     const isCustom = document.getElementById('dateRange').value === 'custom';
