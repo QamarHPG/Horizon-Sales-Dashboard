@@ -192,7 +192,7 @@
     </div>
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
-      <div>Pulled July 18, 2026 · v8</div>
+      <div>Pulled July 20, 2026 · v8</div>
       <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden>↻ Refresh now</button>
       <div class="refresh-status" id="refreshStatus"></div>
     </div>
@@ -365,7 +365,7 @@
   const lifetimeTotals = {
     "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 73, contacted: 63, opens: 6, clicks: 0, replies: 0, bounces: 12 },
     "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", sent: 43, contacted: 40, opens: 2, clicks: 0, replies: 0, bounces: 11 },
-    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", sent: 357, contacted: 326, opens: 29, clicks: 0, replies: 0, bounces: 14 }
+    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", sent: 357, contacted: 349, opens: 29, clicks: 0, replies: 0, bounces: 14 }
   };
 
   // Lifetime totals across every non-draft campaign (active, paused, completed) —
@@ -414,7 +414,7 @@
     { name: "Steph Einfeld", email: "seinfeld@northwestcoloradohealth.org", company: "Northwest Colorado Health", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-14T13:18:54.051Z" }
   ];
 
-  const TODAY = new Date("2026-07-18T23:59:59Z");
+  const TODAY = new Date("2026-07-20T23:59:59Z");
 
   function onRangeChange(){
     const isCustom = document.getElementById('dateRange').value === 'custom';
