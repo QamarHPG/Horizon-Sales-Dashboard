@@ -192,7 +192,7 @@
     </div>
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
-      <div>Pulled July 20, 2026 · v8</div>
+      <div>Pulled July 22, 2026 · v8</div>
       <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden>↻ Refresh now</button>
       <div class="refresh-status" id="refreshStatus"></div>
     </div>
@@ -306,7 +306,7 @@
   </table>
 
   <div class="section-label">How your numbers compare to 2026 industry benchmarks</div>
-  <div class="table-note">Your lifetime blended rate across all <span id="activeCampaignCount">3</span> active campaigns vs. published 2026 cold email benchmarks. Sources below the table.</div>
+  <div class="table-note">Your lifetime blended rate across all <span id="activeCampaignCount">0</span> active campaigns vs. published 2026 cold email benchmarks. Sources below the table.</div>
   <table>
     <thead>
       <tr>
@@ -320,7 +320,7 @@
     <tbody>
       <tr>
         <td>Open rate</td>
-        <td class="num">7.8%</td>
+        <td class="num">0.0%</td>
         <td class="num">27.7% – 44%</td>
         <td class="num">40% – 60%</td>
         <td class="num">65%+</td>
@@ -341,7 +341,7 @@
       </tr>
       <tr>
         <td>Bounce rate</td>
-        <td class="num"><span class="badge bad">7.8%</span></td>
+        <td class="num"><span class="badge good">0.0%</span></td>
         <td class="num">3% – 5%</td>
         <td class="num">under 2%</td>
         <td class="num">under 1%</td>
@@ -363,33 +363,22 @@
 <script>
   // Lifetime totals per campaign — live from Instantly analytics_campaign_overview, June 30 2026
   const lifetimeTotals = {
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 73, contacted: 63, opens: 6, clicks: 0, replies: 0, bounces: 12 },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", sent: 43, contacted: 40, opens: 2, clicks: 0, replies: 0, bounces: 11 },
-    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", sent: 357, contacted: 349, opens: 29, clicks: 0, replies: 0, bounces: 14 }
+
   };
 
   // Lifetime totals across every non-draft campaign (active, paused, completed) —
   // auto-discovered from Instantly and rebuilt on every refresh.
   const allCampaignsLifetime = {
     "b679c367-3b91-4411-b351-af7a4185310b": { name: "Home Health Care 1", status: "paused", sent: 194, opens: 39, replies: 1, bounces: 3 },
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "active", sent: 73, opens: 6, replies: 0, bounces: 12 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "paused", sent: 82, opens: 6, replies: 0, bounces: 21 },
     "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", status: "completed", sent: 364, opens: 51, replies: 0, bounces: 5 },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", status: "active", sent: 43, opens: 2, replies: 0, bounces: 11 },
-    "2566e143-6adb-468f-a604-1d1475b5e32b": { name: "Dental, Med SPA, Janitorial", status: "paused", sent: 188, opens: 30, replies: 0, bounces: 3 },
-    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", status: "active", sent: 357, opens: 29, replies: 0, bounces: 14 }
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", status: "paused", sent: 47, opens: 2, replies: 0, bounces: 15 },
+    "2566e143-6adb-468f-a604-1d1475b5e32b": { name: "Dental, Med SPA, Janitorial", status: "paused", sent: 188, opens: 30, replies: 0, bounces: 3 }
   };
 
   // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
   const dailyData = {
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": [
-      {date:"2026-07-08",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-09",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-13",sent:14,opens:2,clicks:0,replies:0},{date:"2026-07-14",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-15",sent:4,opens:0,clicks:0,replies:0},{date:"2026-07-17",sent:6,opens:3,clicks:0,replies:0}
-    ],
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": [
-      {date:"2026-07-13",sent:17,opens:1,clicks:0,replies:0},{date:"2026-07-14",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-15",sent:8,opens:0,clicks:0,replies:0},{date:"2026-07-17",sent:3,opens:0,clicks:0,replies:0}
-    ],
-    "07bee31e-9703-4058-9a61-507e2f4840a7": [
-      {date:"2026-06-23",sent:10,opens:1,clicks:0,replies:0},{date:"2026-06-24",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-25",sent:16,opens:2,clicks:0,replies:0},{date:"2026-06-26",sent:17,opens:1,clicks:0,replies:0},{date:"2026-06-27",sent:16,opens:1,clicks:0,replies:0},{date:"2026-06-28",sent:15,opens:0,clicks:0,replies:0},{date:"2026-06-29",sent:16,opens:3,clicks:0,replies:0},{date:"2026-06-30",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-01",sent:16,opens:3,clicks:0,replies:0},{date:"2026-07-02",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-03",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-04",sent:16,opens:0,clicks:0,replies:0},{date:"2026-07-05",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-06",sent:16,opens:5,clicks:0,replies:0},{date:"2026-07-07",sent:16,opens:1,clicks:0,replies:0},{date:"2026-07-08",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-09",sent:16,opens:3,clicks:0,replies:0},{date:"2026-07-10",sent:17,opens:0,clicks:0,replies:0},{date:"2026-07-11",sent:25,opens:1,clicks:0,replies:0},{date:"2026-07-12",sent:19,opens:0,clicks:0,replies:0},{date:"2026-07-13",sent:13,opens:1,clicks:0,replies:0},{date:"2026-07-14",sent:10,opens:1,clicks:0,replies:0},{date:"2026-07-15",sent:3,opens:0,clicks:0,replies:0},{date:"2026-07-17",sent:5,opens:0,clicks:0,replies:0}
-    ]
+
   };
 
   function pct(n, d){ return d > 0 ? ((n/d)*100).toFixed(1) : "0.0"; }
@@ -405,16 +394,10 @@
 
   // Repeat openers — live from Instantly list_leads, June 30 2026
   const repeatOpeners = [
-    { name: "Daniel Blatt", email: "dblatt@nmsincusa.com", company: "Nationwide Medical Surgical", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 4, emailsSent: 4, replies: 0, lastOpen: "2026-07-01T14:51:20.068Z" },
-    { name: "Al Morentin", email: "al@myfitlife.net", company: "MOVIDA CBD & Superfoods", campaignKey: "a5aea1c0-454f-47d8-a019-5af2635e9f07", campaign: "Med SPA Campaign", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-17T21:20:11.547Z" },
-    { name: "David Kennedy", email: "david@kennedycare.com", company: "Kennedy Care", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-01T13:01:53.142Z" },
-    { name: "Corey Centen", email: "corey@bodyport.com", company: "Bodyport", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-02T14:45:19.418Z" },
-    { name: "Alyssa Moore", email: "alyssa@spren.com", company: "Spren", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-07T15:24:32.695Z" },
-    { name: "Afik Gal", email: "afik@assuredallies.com", company: "Assured Allies", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 4, replies: 0, lastOpen: "2026-07-17T21:05:15.145Z" },
-    { name: "Steph Einfeld", email: "seinfeld@northwestcoloradohealth.org", company: "Northwest Colorado Health", campaignKey: "07bee31e-9703-4058-9a61-507e2f4840a7", campaign: "Home Health Care (1M - 5M)", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-14T13:18:54.051Z" }
+    
   ];
 
-  const TODAY = new Date("2026-07-20T23:59:59Z");
+  const TODAY = new Date("2026-07-22T23:59:59Z");
 
   function onRangeChange(){
     const isCustom = document.getElementById('dateRange').value === 'custom';
@@ -600,9 +583,7 @@
   // Step-level send volume — live from Instantly analytics_campaign_steps, June 30 2026
   // null = sequence doesn't have this many steps; 0 = has the step but no leads reached it yet
   const stepSends = {
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", maxSteps: 4, sends: [31, 27, 10, 5] },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", maxSteps: 4, sends: [40, 3, 0, 0] },
-    "07bee31e-9703-4058-9a61-507e2f4840a7": { name: "Home Health Care (1M - 5M)", maxSteps: 4, sends: [111, 88, 86, 72] }
+    
   };
 
   function renderStepTable(){
