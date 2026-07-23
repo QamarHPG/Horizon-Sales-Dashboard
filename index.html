@@ -192,7 +192,7 @@
     </div>
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
-      <div>Pulled July 22, 2026 · v8</div>
+      <div>Pulled July 23, 2026 · v8</div>
       <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden>↻ Refresh now</button>
       <div class="refresh-status" id="refreshStatus"></div>
     </div>
@@ -369,10 +369,11 @@
   // Lifetime totals across every non-draft campaign (active, paused, completed) —
   // auto-discovered from Instantly and rebuilt on every refresh.
   const allCampaignsLifetime = {
+    "eef07858-f85d-451e-b543-3a37166c9413": { name: "Home Health 7/22", status: "paused", sent: 6, opens: 0, replies: 0, bounces: 4 },
     "b679c367-3b91-4411-b351-af7a4185310b": { name: "Home Health Care 1", status: "paused", sent: 194, opens: 39, replies: 1, bounces: 3 },
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "paused", sent: 82, opens: 6, replies: 0, bounces: 21 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "paused", sent: 91, opens: 9, replies: 0, bounces: 30 },
     "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", status: "completed", sent: 364, opens: 51, replies: 0, bounces: 5 },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", status: "paused", sent: 47, opens: 2, replies: 0, bounces: 15 },
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", status: "paused", sent: 56, opens: 2, replies: 0, bounces: 24 },
     "2566e143-6adb-468f-a604-1d1475b5e32b": { name: "Dental, Med SPA, Janitorial", status: "paused", sent: 188, opens: 30, replies: 0, bounces: 3 }
   };
 
@@ -397,7 +398,7 @@
     
   ];
 
-  const TODAY = new Date("2026-07-22T23:59:59Z");
+  const TODAY = new Date("2026-07-23T23:59:59Z");
 
   function onRangeChange(){
     const isCustom = document.getElementById('dateRange').value === 'custom';
