@@ -192,7 +192,7 @@
     </div>
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
-      <div>Pulled July 28, 2026 · v8</div>
+      <div>Pulled July 29, 2026 · v8</div>
       <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden>↻ Refresh now</button>
       <div class="refresh-status" id="refreshStatus"></div>
     </div>
@@ -320,7 +320,7 @@
     <tbody>
       <tr>
         <td>Open rate</td>
-        <td class="num">8.8%</td>
+        <td class="num">7.9%</td>
         <td class="num">27.7% – 44%</td>
         <td class="num">40% – 60%</td>
         <td class="num">65%+</td>
@@ -341,7 +341,7 @@
       </tr>
       <tr>
         <td>Bounce rate</td>
-        <td class="num"><span class="badge bad">26.9%</span></td>
+        <td class="num"><span class="badge bad">22.8%</span></td>
         <td class="num">3% – 5%</td>
         <td class="num">under 2%</td>
         <td class="num">under 1%</td>
@@ -363,32 +363,32 @@
 <script>
   // Lifetime totals per campaign — live from Instantly analytics_campaign_overview, June 30 2026
   const lifetimeTotals = {
-    "eef07858-f85d-451e-b543-3a37166c9413": { name: "Home Health 7/22", sent: 27, contacted: 15, opens: 5, clicks: 0, replies: 0, bounces: 4 },
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 112, contacted: 102, opens: 9, clicks: 0, replies: 0, bounces: 30 },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", sent: 77, contacted: 67, opens: 5, clicks: 32, replies: 0, bounces: 24 }
+    "eef07858-f85d-451e-b543-3a37166c9413": { name: "Home Health 7/22", sent: 37, contacted: 20, opens: 5, clicks: 0, replies: 0, bounces: 4 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", sent: 126, contacted: 111, opens: 10, clicks: 0, replies: 0, bounces: 30 },
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", sent: 91, contacted: 76, opens: 5, clicks: 41, replies: 0, bounces: 24 }
   };
 
   // Lifetime totals across every non-draft campaign (active, paused, completed) —
   // auto-discovered from Instantly and rebuilt on every refresh.
   const allCampaignsLifetime = {
-    "eef07858-f85d-451e-b543-3a37166c9413": { name: "Home Health 7/22", status: "active", sent: 27, opens: 5, replies: 0, bounces: 4 },
+    "eef07858-f85d-451e-b543-3a37166c9413": { name: "Home Health 7/22", status: "active", sent: 37, opens: 5, replies: 0, bounces: 4 },
     "b679c367-3b91-4411-b351-af7a4185310b": { name: "Home Health Care 1", status: "paused", sent: 194, opens: 39, replies: 1, bounces: 3 },
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "active", sent: 112, opens: 9, replies: 0, bounces: 30 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", status: "active", sent: 126, opens: 10, replies: 0, bounces: 30 },
     "a4a98af6-b3af-4332-9e14-d59c0a30e860": { name: "Dental Campaign", status: "completed", sent: 364, opens: 51, replies: 0, bounces: 5 },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", status: "active", sent: 77, opens: 5, replies: 0, bounces: 24 },
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", status: "active", sent: 91, opens: 5, replies: 0, bounces: 24 },
     "2566e143-6adb-468f-a604-1d1475b5e32b": { name: "Dental, Med SPA, Janitorial", status: "paused", sent: 188, opens: 30, replies: 0, bounces: 3 }
   };
 
   // Daily breakdown per campaign — live from Instantly get_daily_campaign_analytics
   const dailyData = {
     "eef07858-f85d-451e-b543-3a37166c9413": [
-      {date:"2026-07-23",sent:6,opens:0,clicks:0,replies:0},{date:"2026-07-25",sent:5,opens:2,clicks:0,replies:0},{date:"2026-07-26",sent:5,opens:2,clicks:0,replies:0},{date:"2026-07-27",sent:5,opens:1,clicks:0,replies:0},{date:"2026-07-28",sent:6,opens:0,clicks:0,replies:0}
+      {date:"2026-07-23",sent:6,opens:0,clicks:0,replies:0},{date:"2026-07-25",sent:5,opens:2,clicks:0,replies:0},{date:"2026-07-26",sent:5,opens:2,clicks:0,replies:0},{date:"2026-07-27",sent:5,opens:1,clicks:0,replies:0},{date:"2026-07-28",sent:8,opens:0,clicks:0,replies:0},{date:"2026-07-29",sent:8,opens:0,clicks:0,replies:0}
     ],
     "a5aea1c0-454f-47d8-a019-5af2635e9f07": [
-      {date:"2026-07-08",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-09",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-13",sent:14,opens:2,clicks:0,replies:0},{date:"2026-07-14",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-15",sent:4,opens:0,clicks:0,replies:0},{date:"2026-07-17",sent:6,opens:3,clicks:0,replies:0},{date:"2026-07-20",sent:9,opens:0,clicks:0,replies:0},{date:"2026-07-23",sent:9,opens:3,clicks:0,replies:0},{date:"2026-07-25",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-26",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-27",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-28",sent:6,opens:0,clicks:0,replies:0}
+      {date:"2026-07-08",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-09",sent:14,opens:0,clicks:0,replies:0},{date:"2026-07-10",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-13",sent:14,opens:2,clicks:0,replies:0},{date:"2026-07-14",sent:15,opens:0,clicks:0,replies:0},{date:"2026-07-15",sent:4,opens:0,clicks:0,replies:0},{date:"2026-07-17",sent:6,opens:3,clicks:0,replies:0},{date:"2026-07-20",sent:9,opens:0,clicks:0,replies:0},{date:"2026-07-23",sent:9,opens:3,clicks:0,replies:0},{date:"2026-07-25",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-26",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-27",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-28",sent:10,opens:0,clicks:0,replies:0},{date:"2026-07-29",sent:10,opens:1,clicks:0,replies:0}
     ],
     "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": [
-      {date:"2026-07-13",sent:17,opens:1,clicks:0,replies:0},{date:"2026-07-14",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-15",sent:8,opens:0,clicks:0,replies:0},{date:"2026-07-17",sent:3,opens:0,clicks:0,replies:0},{date:"2026-07-20",sent:4,opens:0,clicks:0,replies:0},{date:"2026-07-23",sent:9,opens:0,clicks:0,replies:0},{date:"2026-07-25",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-26",sent:5,opens:2,clicks:11,replies:0},{date:"2026-07-27",sent:5,opens:1,clicks:8,replies:0},{date:"2026-07-28",sent:6,opens:0,clicks:13,replies:0}
+      {date:"2026-07-13",sent:17,opens:1,clicks:0,replies:0},{date:"2026-07-14",sent:15,opens:1,clicks:0,replies:0},{date:"2026-07-15",sent:8,opens:0,clicks:0,replies:0},{date:"2026-07-17",sent:3,opens:0,clicks:0,replies:0},{date:"2026-07-20",sent:4,opens:0,clicks:0,replies:0},{date:"2026-07-23",sent:9,opens:0,clicks:0,replies:0},{date:"2026-07-25",sent:5,opens:0,clicks:0,replies:0},{date:"2026-07-26",sent:5,opens:2,clicks:11,replies:0},{date:"2026-07-27",sent:5,opens:1,clicks:8,replies:0},{date:"2026-07-28",sent:10,opens:0,clicks:16,replies:0},{date:"2026-07-29",sent:10,opens:0,clicks:6,replies:0}
     ]
   };
 
@@ -405,12 +405,12 @@
 
   // Repeat openers — live from Instantly list_leads, June 30 2026
   const repeatOpeners = [
-    { name: "Brian Turner", email: "brian@assuredsl.com", company: "Assured Senior Living", campaignKey: "eef07858-f85d-451e-b543-3a37166c9413", campaign: "Home Health 7/22", opens: 3, emailsSent: 2, replies: 0, lastOpen: "2026-07-27T13:44:51.516Z" },
+    { name: "Brian Turner", email: "brian@assuredsl.com", company: "Assured Senior Living", campaignKey: "eef07858-f85d-451e-b543-3a37166c9413", campaign: "Home Health 7/22", opens: 3, emailsSent: 3, replies: 0, lastOpen: "2026-07-29T13:39:01.612Z" },
     { name: "Al Morentin", email: "al@myfitlife.net", company: "MOVIDA CBD & Superfoods", campaignKey: "a5aea1c0-454f-47d8-a019-5af2635e9f07", campaign: "Med SPA Campaign", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-17T21:20:11.547Z" },
     { name: "Joel Lyons", email: "joel.lyons@lyonsrestores.com", company: "Lyons Restores", campaignKey: "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef", campaign: "Janitorial Campaign", opens: 2, emailsSent: 3, replies: 0, lastOpen: "2026-07-28T12:22:06.151Z" }
   ];
 
-  const TODAY = new Date("2026-07-28T23:59:59Z");
+  const TODAY = new Date("2026-07-29T23:59:59Z");
 
   function onRangeChange(){
     const isCustom = document.getElementById('dateRange').value === 'custom';
@@ -596,9 +596,9 @@
   // Step-level send volume — live from Instantly analytics_campaign_steps, June 30 2026
   // null = sequence doesn't have this many steps; 0 = has the step but no leads reached it yet
   const stepSends = {
-    "eef07858-f85d-451e-b543-3a37166c9413": { name: "Home Health 7/22", maxSteps: 5, sends: [15, 10, 2, 0, 0] },
-    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", maxSteps: 4, sends: [41, 38, 28, 5, null] },
-    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", maxSteps: 4, sends: [40, 27, 10, 0, null] }
+    "eef07858-f85d-451e-b543-3a37166c9413": { name: "Home Health 7/22", maxSteps: 5, sends: [20, 10, 5, 2, 0] },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { name: "Med SPA Campaign", maxSteps: 4, sends: [50, 38, 32, 6, null] },
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { name: "Janitorial Campaign", maxSteps: 4, sends: [44, 32, 10, 5, null] }
   };
 
   function renderStepTable(){
