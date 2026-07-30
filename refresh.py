@@ -79,6 +79,38 @@ def fetch_all_campaigns():
 def fetch_overview(campaign_id):
     return get("/campaigns/analytics/overview", {"id": campaign_id})
 
+def fetch_overview_range(campaign_id, start_date, end_date):
+    return get("/campaigns/analytics/overview", {
+        "id": campaign_id,
+        "start_date": start_date,
+        "end_date": end_date,
+    })
+
+def shift_date_str(date_str, days):
+    d = datetime.strptime(date_str, "%Y-%m-%d").date() + timedelta(days=days)
+    return d.isoformat()
+
+# Instantly's ranged overview endpoint returns a true deduped unique-click
+# count for the queried range, unlike summing per-day unique_clicks buckets
+# (which double-counts a repeat clicker, e.g. a link-scanner bot, once per
+# day it clicked). Only fixed presets can be precomputed here since custom
+# ranges are picked live in the browser, long after this script has run.
+def range_bounds(today_iso):
+    yesterday = shift_date_str(today_iso, -1)
+    return {
+        "today": (today_iso, today_iso),
+        "yesterday": (yesterday, yesterday),
+        "7d": (shift_date_str(today_iso, -6), today_iso),
+        "30d": (shift_date_str(today_iso, -29), today_iso),
+    }
+
+def fetch_range_clicks(campaign_id, today_iso):
+    out = {}
+    for label, (start_d, end_d) in range_bounds(today_iso).items():
+        ov = fetch_overview_range(campaign_id, start_d, end_d)
+        out[label] = ov.get("link_click_count_unique", 0)
+    return out
+
 def fetch_daily(campaign_id, days=30):
     end = datetime.now(timezone.utc).date()
     start = end - timedelta(days=days)
@@ -284,6 +316,7 @@ def main():
     step_sends = {}
     repeat_openers = []
     all_campaigns_lifetime = {}
+    range_clicks = {}
 
     for cid, info in tracked_campaigns.items():
         cname = info["name"]
@@ -305,6 +338,7 @@ def main():
             continue  # paused/completed: lifetime totals only, no daily/step/opener detail
 
         lifetime_totals[cid] = lt
+        range_clicks[cid] = fetch_range_clicks(cid, today_iso)
 
         rows = fetch_daily(cid, days=30)
         daily_data[cid] = build_daily_rows(rows, today_iso)
@@ -368,6 +402,12 @@ def main():
 
     acl_js = "{\n    " + ",\n    ".join(acl_js_entry(cid, v) for cid, v in all_campaigns_lifetime.items()) + "\n  }"
 
+    def range_clicks_entry(cid, v):
+        return (f'{json.dumps(cid)}: {{ today: {v["today"]}, yesterday: {v["yesterday"]}, '
+                f'"7d": {v["7d"]}, "30d": {v["30d"]} }}')
+
+    rc_js = "{\n    " + ",\n    ".join(range_clicks_entry(cid, v) for cid, v in range_clicks.items()) + "\n  }"
+
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
@@ -392,6 +432,7 @@ def main():
     html = replace_array_block(html, "repeatOpeners", ro_js)
     html = replace_block(html, "stepSends", ss_js)
     html = replace_block(html, "allCampaignsLifetime", acl_js)
+    html = replace_block(html, "rangeClicks", rc_js)
 
     html = re.sub(
         r'Pulled \w+ \d+, \d{4}',

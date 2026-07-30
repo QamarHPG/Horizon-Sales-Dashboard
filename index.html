@@ -300,7 +300,6 @@
   <div class="kpi-grid" id="kpiGrid"></div>
 
   <div class="section-label">Per-campaign comparison — active campaigns (lifetime totals)</div>
-  <div class="table-note">Bounces aren't broken out by day in Instantly's API, so bounce rate only appears here at the lifetime level.</div>
   <table>
     <thead>
       <tr>
@@ -462,6 +461,19 @@
     ]
   };
 
+  // Exact per-range unique-click totals — computed server-side by refresh.py
+  // via Instantly's ranged overview endpoint (start_date/end_date), NOT by
+  // summing per-day unique_clicks buckets. Summing per-day buckets
+  // double-counts a repeat clicker (e.g. a link-scanner bot) once per day it
+  // clicked, inflating multi-day totals above the true deduped count. Only
+  // covers the fixed presets below — "custom" is picked live in the browser
+  // and can't be precomputed ahead of time, so it still uses sumDailyRange.
+  const rangeClicks = {
+    "eef07858-f85d-451e-b543-3a37166c9413": { today: 0, yesterday: 0, "7d": 0, "30d": 0 },
+    "a5aea1c0-454f-47d8-a019-5af2635e9f07": { today: 0, yesterday: 0, "7d": 0, "30d": 0 },
+    "8c740cef-3ac9-4e7c-8db1-a221e4bce0ef": { today: 0, yesterday: 0, "7d": 0, "30d": 0 }
+  };
+
   function pct(n, d){ return d > 0 ? ((n/d)*100).toFixed(1) : "0.0"; }
 
   function sumDailyRange(arr, startStr, endStr){
@@ -621,7 +633,10 @@
       const endStr = end.toISOString().slice(0, 10);
       campaignKeys.forEach(k => {
         const r = sumDailyRange(dailyData[k], startStr, endStr);
-        totals.sent += r.sent; totals.opens += r.opens; totals.clicks += r.clicks; totals.replies += r.replies;
+        totals.sent += r.sent; totals.opens += r.opens; totals.replies += r.replies;
+        // Exact deduped total for this preset range (see rangeClicks above),
+        // not the sum-of-daily-buckets value from sumDailyRange.
+        totals.clicks += (rangeClicks[k] && rangeClicks[k][range]) || 0;
       });
     }
 
