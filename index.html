@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Instantly campaign dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#0D1B2A;
@@ -16,13 +19,26 @@
     --green:#2E7D5B;
     --red:#B34A3A;
     --amber:#B98A1F;
+    --font-display:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+    --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+    --shadow-sm:0 1px 2px rgba(13,27,42,0.05);
+    --shadow-md:0 4px 10px rgba(13,27,42,0.07),0 2px 4px rgba(13,27,42,0.05);
+    --shadow-lg:0 12px 24px rgba(13,27,42,0.10),0 4px 8px rgba(13,27,42,0.05);
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+    font-family:var(--font-body);
     background:var(--bg);
     color:var(--text);
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration:0.001ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:0.001ms !important;
+      scroll-behavior:auto !important;
+    }
   }
   .wrap{max-width:1140px;margin:0 auto;padding:32px 24px 64px;}
   header{
@@ -34,13 +50,37 @@
     margin-bottom:20px;
     flex-wrap:wrap;
     gap:12px;
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:var(--bg);
+    padding-top:12px;
+    margin-top:-12px;
+    transition:box-shadow .25s ease;
   }
+  header.scrolled{box-shadow:0 6px 16px -8px rgba(13,27,42,0.18);}
   header .brand{display:flex;align-items:center;gap:14px;}
   header .brand img.logo{height:52px;width:auto;flex-shrink:0;}
-  header h1{font-size:24px;font-weight:700;color:var(--navy);margin:0 0 4px 0;}
+  header h1{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--navy);margin:0 0 4px 0;letter-spacing:-0.01em;}
   header .sub{font-size:13px;color:var(--text-muted);}
   header .meta{text-align:right;font-size:12px;color:var(--text-muted);}
   header .meta .live{color:var(--green);font-weight:600;}
+  header .meta .live::before{
+    content:'';
+    display:inline-block;
+    width:7px;height:7px;
+    margin-right:5px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 0 0 rgba(46,125,91,0.55);
+    animation:livePulse 2.2s ease-out infinite;
+    vertical-align:middle;
+  }
+  @keyframes livePulse{
+    0%{box-shadow:0 0 0 0 rgba(46,125,91,0.45);}
+    70%{box-shadow:0 0 0 6px rgba(46,125,91,0);}
+    100%{box-shadow:0 0 0 0 rgba(46,125,91,0);}
+  }
   header .meta .refresh-btn{
     margin-top:6px;
     font-size:12px;
@@ -51,9 +91,17 @@
     background:var(--navy);
     color:#fff;
     cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:opacity .15s ease, transform .15s ease, box-shadow .15s ease;
   }
-  header .meta .refresh-btn:hover{opacity:.85;}
-  header .meta .refresh-btn:disabled{opacity:.55;cursor:default;}
+  header .meta .refresh-btn:hover{opacity:.85;box-shadow:var(--shadow-sm);transform:translateY(-1px);}
+  header .meta .refresh-btn:active{transform:translateY(0);}
+  header .meta .refresh-btn:disabled{opacity:.55;cursor:default;transform:none;}
+  header .meta .refresh-btn .refresh-icon{display:inline-block;line-height:1;}
+  header .meta .refresh-btn.is-loading .refresh-icon{animation:spin 0.9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
   header .meta .refresh-status{margin-top:4px;font-size:11px;}
 
   .controls{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
@@ -68,7 +116,9 @@
     color:var(--text);
     min-width:200px;
     font-family:inherit;
+    transition:border-color .15s ease, box-shadow .15s ease;
   }
+  select:hover{border-color:#C9C4B4;}
   select:focus{outline:2px solid var(--gold);outline-offset:1px;}
   .date-pair{display:flex;align-items:center;gap:8px;}
   .date-pair .date-sep{font-size:12px;color:var(--text-muted);}
@@ -80,10 +130,13 @@
     background:var(--card);
     color:var(--text);
     font-family:inherit;
+    transition:border-color .15s ease, box-shadow .15s ease;
   }
+  input[type="date"]:hover{border-color:#C9C4B4;}
   input[type="date"]:focus{outline:2px solid var(--gold);outline-offset:1px;}
 
   .section-label{
+    font-family:var(--font-display);
     font-size:12px;
     font-weight:700;
     letter-spacing:0.08em;
@@ -103,12 +156,15 @@
     border-radius:10px;
     padding:16px 18px;
     border-top:3px solid var(--navy);
+    box-shadow:var(--shadow-sm);
+    transition:transform .2s ease, box-shadow .2s ease;
   }
+  .kpi-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
   .kpi-card .label{font-size:12px;color:var(--text-muted);margin-bottom:6px;}
-  .kpi-card .value{font-size:26px;font-weight:700;color:var(--navy);line-height:1;}
+  .kpi-card .value{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--navy);line-height:1;font-variant-numeric:tabular-nums;}
   .kpi-card .sub{font-size:12px;margin-top:6px;font-weight:600;color:var(--text-muted);}
 
-  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm);}
   th{
     text-align:left;
     background:var(--navy);
@@ -120,10 +176,10 @@
     padding:10px 12px;
   }
   th.num,td.num{text-align:right;}
-  td{padding:10px 12px;border-bottom:1px solid var(--border);}
+  td{padding:10px 12px;border-bottom:1px solid var(--border);transition:background-color .12s ease;}
   tr:last-child td{border-bottom:none;}
   tr:hover td{background:#FAF9F6;}
-  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;transition:transform .12s ease;}
   .badge.bad{background:#F6E3E0;color:var(--red);}
   .badge.good{background:#E2F0E8;color:var(--green);}
 
@@ -153,7 +209,7 @@
   details.expand[open] summary .arrow{transform:rotate(90deg);}
   details.expand summary:hover{background:#FAF9F6;}
   details.expand .expand-body{padding:0 16px 16px;}
-  details.expand table{border:none;border-radius:0;}
+  details.expand table{border:none;border-radius:0;box-shadow:none;}
 
   .suggest-list{display:flex;flex-direction:column;gap:12px;}
   .suggest-card{
@@ -162,7 +218,10 @@
     border-left:4px solid var(--gold);
     border-radius:0 10px 10px 0;
     padding:14px 18px;
+    box-shadow:var(--shadow-sm);
+    transition:transform .15s ease, box-shadow .15s ease;
   }
+  .suggest-card:hover{transform:translateX(2px);box-shadow:var(--shadow-md);}
   .suggest-card .head{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
   .suggest-card .head .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;}
   .suggest-card .head .tag.priority{color:var(--red);}
@@ -173,9 +232,20 @@
 
   footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);text-align:center;}
 
+  /* Scroll-reveal: class is only ever added by JS (and only when the user
+     hasn't asked for reduced motion), so if JS fails to run content is
+     visible by default — nothing depends on this class for legibility. */
+  .reveal{opacity:0;transform:translateY(14px);}
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+    transition:opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1);
+  }
+
   @media (max-width:760px){
     .kpi-grid{grid-template-columns:repeat(2,1fr);}
     select{min-width:150px;}
+    header{position:static;}
   }
 </style>
 </head>
@@ -193,7 +263,7 @@
     <div class="meta">
       <div><span class="live">●</span> Live snapshot</div>
       <div>Pulled July 30, 2026 · v8</div>
-      <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden>↻ Refresh now</button>
+      <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()" hidden><span class="refresh-icon">↻</span> Refresh now</button>
       <div class="refresh-status" id="refreshStatus"></div>
     </div>
   </header>
@@ -556,19 +626,55 @@
     }
 
     const cards = [
-      { label: "Emails sent", value: totals.sent.toLocaleString() },
-      { label: "Opens", value: totals.opens.toLocaleString(), sub: totals.sent > 0 ? pct(totals.opens, totals.sent) + "% open rate" : "0.0% open rate" },
-      { label: "Clicks", value: totals.clicks.toLocaleString(), sub: totals.sent > 0 ? pct(totals.clicks, totals.sent) + "% click rate" : "0.0% click rate" },
-      { label: "Replies", value: totals.replies.toLocaleString(), sub: totals.sent > 0 ? pct(totals.replies, totals.sent) + "% reply rate" : "0.0% reply rate" }
+      { label: "Emails sent", value: totals.sent },
+      { label: "Opens", value: totals.opens, sub: totals.sent > 0 ? pct(totals.opens, totals.sent) + "% open rate" : "0.0% open rate" },
+      { label: "Clicks", value: totals.clicks, sub: totals.sent > 0 ? pct(totals.clicks, totals.sent) + "% click rate" : "0.0% click rate" },
+      { label: "Replies", value: totals.replies, sub: totals.sent > 0 ? pct(totals.replies, totals.sent) + "% reply rate" : "0.0% reply rate" }
     ];
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     document.getElementById('kpiGrid').innerHTML = cards.map(c => `
       <div class="kpi-card">
         <div class="label">${c.label}</div>
-        <div class="value">${c.value}</div>
+        <div class="value" data-target="${c.value}">${reduceMotion ? c.value.toLocaleString() : '0'}</div>
         <div class="sub">${c.sub || ''}</div>
       </div>
     `).join('');
+
+    if (!reduceMotion) {
+      document.querySelectorAll('#kpiGrid .value').forEach(el => {
+        animateCount(el, parseInt(el.dataset.target, 10));
+      });
+    }
+  }
+
+  // Animates a KPI number counting up from 0 to its target — purely a
+  // presentation effect on values already computed above; never recomputes
+  // or alters the underlying totals.
+  function animateCount(el, target){
+    // Background/inactive tabs throttle or fully pause requestAnimationFrame,
+    // so a setTimeout safety net guarantees the real value always lands even
+    // if the rAF loop never runs (e.g. dashboard opened in a background tab).
+    let done = false;
+    function finish(){
+      if (done) return;
+      done = true;
+      el.textContent = target.toLocaleString();
+    }
+    if (document.hidden) { finish(); return; }
+    const duration = 650;
+    const start = performance.now();
+    function step(now){
+      if (done) return;
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+      else finish();
+    }
+    requestAnimationFrame(step);
+    setTimeout(finish, duration + 300);
   }
 
   function renderCampaignTable(){
@@ -687,6 +793,7 @@
     const btn = document.getElementById('refreshBtn');
     const status = document.getElementById('refreshStatus');
     btn.disabled = true;
+    btn.classList.add('is-loading');
     status.textContent = 'Starting refresh…';
     try {
       const res = await fetch(REFRESH_WORKER_URL, { method: 'POST' });
@@ -706,9 +813,47 @@
     } catch (err) {
       status.textContent = 'Refresh failed: ' + err.message;
       btn.disabled = false;
+      btn.classList.remove('is-loading');
     }
   }
   window.triggerRefresh = triggerRefresh;
+
+  // --- Polish: scroll-reveal + sticky header shadow ---
+  // Both are pure presentation and skip entirely under prefers-reduced-motion.
+  // The 'reveal' class is only ever added here, so if this script fails for
+  // any reason, every section is simply visible at full opacity by default.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const revealTargets = document.querySelectorAll(
+      '.wrap > header, .wrap > .controls, .wrap > .section-label, .wrap > .kpi-grid, .wrap > table, .wrap > details.expand, .wrap > footer'
+    );
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      revealTargets.forEach(el => {
+        el.classList.add('reveal');
+        observer.observe(el);
+      });
+      // Safety net: browsers throttle/pause IntersectionObserver callbacks
+      // on hidden/background tabs, which could leave sections stuck at
+      // opacity:0 indefinitely if the tab isn't foregrounded right away.
+      // Force everything visible after a couple seconds no matter what.
+      setTimeout(() => {
+        revealTargets.forEach(el => el.classList.add('in'));
+        observer.disconnect();
+      }, 2500);
+    }
+  }
+
+  const headerEl = document.querySelector('header');
+  window.addEventListener('scroll', () => {
+    headerEl.classList.toggle('scrolled', window.scrollY > 4);
+  }, { passive: true });
 </script>
 </body>
 </html>
