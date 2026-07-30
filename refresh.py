@@ -135,7 +135,7 @@ def build_lifetime(overview, campaign_name):
         "sent": overview.get("emails_sent_count", 0),
         "contacted": overview.get("contacted_count", 0),
         "opens": overview.get("open_count", 0),
-        "clicks": overview.get("link_click_count", 0),
+        "clicks": overview.get("link_click_count_unique", 0),
         "replies": overview.get("reply_count", 0),
         "bounces": overview.get("bounced_count", 0),
     }
@@ -147,7 +147,7 @@ def build_daily_rows(rows, today_iso):
             "date": r.get("date", ""),
             "sent": r.get("sent", 0),
             "opens": r.get("opened", 0),
-            "clicks": r.get("clicks", 0),
+            "clicks": r.get("unique_clicks", 0),
             "replies": r.get("replies", 0),
         })
     # Instantly buckets days by UTC. Between 8 PM ET and midnight ET the
