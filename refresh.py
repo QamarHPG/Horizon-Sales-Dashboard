@@ -178,6 +178,7 @@ def build_daily_rows(rows, today_iso):
         out.append({
             "date": r.get("date", ""),
             "sent": r.get("sent", 0),
+            "contacted": r.get("contacted", 0),
             "opens": r.get("opened", 0),
             "clicks": r.get("unique_clicks", 0),
             "replies": r.get("replies", 0),
@@ -191,10 +192,10 @@ def build_daily_rows(rows, today_iso):
         out = [r for r in out if r["date"] <= today_iso]
         today_row = next((r for r in out if r["date"] == today_iso), None)
         if today_row is None:
-            today_row = {"date": today_iso, "sent": 0, "opens": 0, "clicks": 0, "replies": 0}
+            today_row = {"date": today_iso, "sent": 0, "contacted": 0, "opens": 0, "clicks": 0, "replies": 0}
             out.append(today_row)
         for r in future:
-            for k in ("sent", "opens", "clicks", "replies"):
+            for k in ("sent", "contacted", "opens", "clicks", "replies"):
                 today_row[k] += r[k]
     return out
 
@@ -373,7 +374,7 @@ def main():
     ) + "\n  }"
 
     def daily_row_js(r):
-        return (f'{{date:{json.dumps(r["date"])},sent:{r["sent"]},'
+        return (f'{{date:{json.dumps(r["date"])},sent:{r["sent"]},contacted:{r["contacted"]},'
                 f'opens:{r["opens"]},clicks:{r["clicks"]},replies:{r["replies"]}}}')
 
     dd_js = "{\n" + ",\n".join(

@@ -283,14 +283,14 @@
     <div class="control-group" id="customDates" hidden>
       <label for="customFrom">Custom dates</label>
       <div class="date-pair">
-        <input type="date" id="customFrom" onchange="renderKPIs(); renderRepeatOpeners();">
+        <input type="date" id="customFrom" onchange="renderKPIs(); renderCampaignTable(); renderRepeatOpeners();">
         <span class="date-sep">to</span>
-        <input type="date" id="customTo" onchange="renderKPIs(); renderRepeatOpeners();">
+        <input type="date" id="customTo" onchange="renderKPIs(); renderCampaignTable(); renderRepeatOpeners();">
       </div>
     </div>
     <div class="control-group">
       <label for="campaignFilter">Campaign</label>
-      <select id="campaignFilter" onchange="renderKPIs(); renderRepeatOpeners();">
+      <select id="campaignFilter" onchange="renderKPIs(); renderCampaignTable(); renderRepeatOpeners();">
         <option value="all" selected>All active campaigns</option>
       </select>
     </div>
@@ -299,7 +299,8 @@
   <div class="section-label">KPIs for selected range and campaign</div>
   <div class="kpi-grid" id="kpiGrid"></div>
 
-  <div class="section-label">Per-campaign comparison — active campaigns (lifetime totals)</div>
+  <div class="section-label">Per-campaign comparison — active campaigns (selected range)</div>
+  <div class="table-note">Sent, Contacted, Opens, and Clicks reflect the date range selected above and match the KPI cards. Bounces and Bounce rate are always lifetime totals — Instantly's API doesn't break bounces out by day.</div>
   <table>
     <thead>
       <tr>
@@ -480,9 +481,12 @@
     return arr.reduce((acc, d) => {
       if (d.date >= startStr && d.date <= endStr) {
         acc.sent += d.sent; acc.opens += d.opens; acc.clicks += d.clicks; acc.replies += d.replies;
+        // contacted is guarded — cached data baked before this field existed
+        // won't have it until the next refresh.py run.
+        acc.contacted += (d.contacted || 0);
       }
       return acc;
-    }, {sent:0, opens:0, clicks:0, replies:0});
+    }, {sent:0, contacted:0, opens:0, clicks:0, replies:0});
   }
 
   // Repeat openers — live from Instantly list_leads, June 30 2026
@@ -493,6 +497,74 @@
   ];
 
   const TODAY = new Date("2026-07-30T23:59:59Z");
+
+  // UTC calendar-date bounds for each fixed preset, anchored on TODAY (the ET
+  // date refresh.py stamped). Shared by renderKPIs and getCampaignStats so
+  // both always agree on exactly which days a preset covers.
+  function getRangeBoundsForPreset(range){
+    const start = new Date(TODAY);
+    const end = new Date(TODAY);
+    if (range === 'yesterday') {
+      start.setUTCDate(start.getUTCDate() - 1);
+      end.setUTCDate(end.getUTCDate() - 1);
+    } else if (range === '7d') {
+      start.setUTCDate(start.getUTCDate() - 6);
+    } else if (range === '30d') {
+      start.setUTCDate(start.getUTCDate() - 29);
+    }
+    return { startStr: start.toISOString().slice(0, 10), endStr: end.toISOString().slice(0, 10) };
+  }
+
+  // Live per-range click lookups for the custom date picker. Keyed by the
+  // exact (start,end) pair being asked for, so a slow/stale response from a
+  // date pair the user has since changed away from just lands in a cache
+  // entry nothing reads anymore — no request-sequencing needed.
+  const customClicksCache = {};
+
+  function getCustomClicksEntry(startStr, endStr){
+    const key = startStr + '|' + endStr;
+    let entry = customClicksCache[key];
+    if (entry) return entry;
+    entry = { status: 'loading' };
+    customClicksCache[key] = entry;
+    const ids = Object.keys(lifetimeTotals).join(',');
+    fetch(`/api/range-clicks?start=${startStr}&end=${endStr}&ids=${encodeURIComponent(ids)}`)
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(data => { entry.status = 'ready'; entry.data = data; renderKPIs(); renderCampaignTable(); })
+      .catch(() => { entry.status = 'error'; renderKPIs(); renderCampaignTable(); });
+    return entry;
+  }
+
+  // Stats for one campaign over one selected range. clicks is null when a
+  // live custom-range lookup hasn't resolved yet (or failed) — callers show
+  // a loading/error state rather than treating null as zero.
+  function getCampaignStats(key, range){
+    const c = lifetimeTotals[key] || { sent:0, contacted:0, opens:0, clicks:0, replies:0, bounces:0 };
+    // Bounces have no daily breakdown in Instantly's API, so they're always
+    // the lifetime figure regardless of the selected range.
+    const bounces = c.bounces;
+
+    if (range === 'lifetime') {
+      return { sent: c.sent, contacted: c.contacted, opens: c.opens, clicks: c.clicks, replies: c.replies, bounces, clicksStatus: 'ready' };
+    }
+
+    const rows = dailyData[key] || [];
+
+    if (range === 'custom') {
+      const { startStr, endStr } = getCustomRange();
+      const r = sumDailyRange(rows, startStr, endStr);
+      const entry = getCustomClicksEntry(startStr, endStr);
+      const clicks = entry.status === 'ready'
+        ? (typeof entry.data[key] === 'number' ? entry.data[key] : null)
+        : null;
+      return { sent: r.sent, contacted: r.contacted, opens: r.opens, clicks, replies: r.replies, bounces, clicksStatus: entry.status === 'ready' && clicks === null ? 'error' : entry.status };
+    }
+
+    const { startStr, endStr } = getRangeBoundsForPreset(range);
+    const r = sumDailyRange(rows, startStr, endStr);
+    const clicks = (rangeClicks[key] && rangeClicks[key][range]) || 0;
+    return { sent: r.sent, contacted: r.contacted, opens: r.opens, clicks, replies: r.replies, bounces, clicksStatus: 'ready' };
+  }
 
   function onRangeChange(){
     const isCustom = document.getElementById('dateRange').value === 'custom';
@@ -512,6 +584,7 @@
       toEl.max = todayStr;
     }
     renderKPIs();
+    renderCampaignTable();
     renderRepeatOpeners();
   }
 
@@ -604,46 +677,25 @@
     const campaignKeys = campaign === 'all' ? Object.keys(lifetimeTotals) : [campaign];
 
     let totals = {sent:0, opens:0, clicks:0, replies:0};
+    let clicksLoading = false, clicksErrored = false;
 
-    if (range === 'lifetime') {
-      campaignKeys.forEach(k => {
-        const c = lifetimeTotals[k];
-        totals.sent += c.sent; totals.opens += c.opens; totals.clicks += c.clicks; totals.replies += c.replies;
-      });
-    } else if (range === 'custom') {
-      const { startStr, endStr } = getCustomRange();
-      campaignKeys.forEach(k => {
-        const r = sumDailyRange(dailyData[k], startStr, endStr);
-        totals.sent += r.sent; totals.opens += r.opens; totals.clicks += r.clicks; totals.replies += r.replies;
-      });
-    } else {
-      // Sum rows by calendar date (UTC), not row position — the row for the
-      // current day may not exist yet if the snapshot was pulled early.
-      const start = new Date(TODAY);
-      const end = new Date(TODAY);
-      if (range === 'yesterday') {
-        start.setUTCDate(start.getUTCDate() - 1);
-        end.setUTCDate(end.getUTCDate() - 1);
-      } else if (range === '7d') {
-        start.setUTCDate(start.getUTCDate() - 6);
-      } else if (range === '30d') {
-        start.setUTCDate(start.getUTCDate() - 29);
-      }
-      const startStr = start.toISOString().slice(0, 10);
-      const endStr = end.toISOString().slice(0, 10);
-      campaignKeys.forEach(k => {
-        const r = sumDailyRange(dailyData[k], startStr, endStr);
-        totals.sent += r.sent; totals.opens += r.opens; totals.replies += r.replies;
-        // Exact deduped total for this preset range (see rangeClicks above),
-        // not the sum-of-daily-buckets value from sumDailyRange.
-        totals.clicks += (rangeClicks[k] && rangeClicks[k][range]) || 0;
-      });
-    }
+    campaignKeys.forEach(k => {
+      const s = getCampaignStats(k, range);
+      totals.sent += s.sent; totals.opens += s.opens; totals.replies += s.replies;
+      if (s.clicksStatus === 'loading') clicksLoading = true;
+      else if (s.clicksStatus === 'error') clicksErrored = true;
+      else totals.clicks += s.clicks;
+    });
+
+    const clicksRaw = clicksLoading ? '…' : (clicksErrored ? '—' : null);
+    const clicksSub = clicksRaw
+      ? (clicksLoading ? 'Loading exact count…' : "Couldn't load exact count")
+      : (totals.sent > 0 ? pct(totals.clicks, totals.sent) + "% click rate" : "0.0% click rate");
 
     const cards = [
       { label: "Emails sent", value: totals.sent },
       { label: "Opens", value: totals.opens, sub: totals.sent > 0 ? pct(totals.opens, totals.sent) + "% open rate" : "0.0% open rate" },
-      { label: "Clicks", value: totals.clicks, sub: totals.sent > 0 ? pct(totals.clicks, totals.sent) + "% click rate" : "0.0% click rate" },
+      { label: "Clicks", value: totals.clicks, raw: clicksRaw, sub: clicksSub },
       { label: "Replies", value: totals.replies, sub: totals.sent > 0 ? pct(totals.replies, totals.sent) + "% reply rate" : "0.0% reply rate" }
     ];
 
@@ -652,13 +704,13 @@
     document.getElementById('kpiGrid').innerHTML = cards.map(c => `
       <div class="kpi-card">
         <div class="label">${c.label}</div>
-        <div class="value" data-target="${c.value}">${reduceMotion ? c.value.toLocaleString() : '0'}</div>
+        <div class="value"${c.raw ? '' : ` data-target="${c.value}"`}>${c.raw ? c.raw : (reduceMotion ? c.value.toLocaleString() : '0')}</div>
         <div class="sub">${c.sub || ''}</div>
       </div>
     `).join('');
 
     if (!reduceMotion) {
-      document.querySelectorAll('#kpiGrid .value').forEach(el => {
+      document.querySelectorAll('#kpiGrid .value[data-target]').forEach(el => {
         animateCount(el, parseInt(el.dataset.target, 10));
       });
     }
@@ -693,20 +745,26 @@
   }
 
   function renderCampaignTable(){
+    const range = document.getElementById('dateRange').value;
     const tbody = document.getElementById('campaignTableBody');
-    tbody.innerHTML = Object.values(lifetimeTotals).map(c => {
+    tbody.innerHTML = Object.keys(lifetimeTotals).map(key => {
+      const name = lifetimeTotals[key].name;
+      const c = getCampaignStats(key, range);
       const openRate = pct(c.opens, c.sent);
       const bounceRate = pct(c.bounces, c.sent);
       const bounceBadge = parseFloat(bounceRate) >= 5
         ? `<span class="badge bad">${bounceRate}%</span>`
         : `<span class="badge good">${bounceRate}%</span>`;
+      const clicksCell = c.clicksStatus === 'loading' ? '…'
+        : c.clicksStatus === 'error' ? '<span title="Couldn\'t load exact count">—</span>'
+        : c.clicks;
       return `<tr>
-        <td>${c.name}</td>
+        <td>${name}</td>
         <td class="num">${c.sent}</td>
         <td class="num">${c.contacted}</td>
         <td class="num">${c.opens}</td>
         <td class="num">${openRate}%</td>
-        <td class="num">${c.clicks}</td>
+        <td class="num">${clicksCell}</td>
         <td class="num">${c.replies}</td>
         <td class="num">${c.bounces}</td>
         <td class="num">${bounceBadge}</td>
